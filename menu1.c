@@ -2,7 +2,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <stdlib.h>
-const int menucount = 4;
+const int menucount = 5;
 
 #define ESC 27
 #define W 119
@@ -35,19 +35,23 @@ void menulist(int a)
     switch(a)
             {
                 case 0:
-                        printf("1.New Game<<<\n2.Select Map \n3.About \n4.Exit\n5.Test\n");
+                        printf("1.New Game<<<\n2.Select Map \n3.Map Creator\n4.About \n5.Exit\n6.Test\n");
                         break;
-                 case 1:
-                        printf("1.New Game\n2.Select Map<<< \n3.About \n4.Exit\n5.Test\n");
+                case 1:
+                        printf("1.New Game\n2.Select Map<<< \n3.Map Creator\n4.About \n5.Exit\n6.Test\n");
                         break;
                 case 2:
-                        printf("1.New Game\n2.Select Map \n3.About<<< \n4.Exit\n5.Test\n");
+                        printf("1.New Game\n2.Select Map \n3.Map Creator<<<\n4.About \n5.Exit\n6.Test\n");
                         break;
-            case 3:
-                        printf("1.New Game\n2.Select Map \n3.About \n4.Exit<<<\n5.Test\n");
+
+                case 3:
+                        printf("1.New Game\n2.Select Map \n3.Map Creator\n4.About<<<\n5.Exit\n6.Test\n");
                         break;
-            case 4:
-                        printf("1.New Game\n2.Select Map \n3.About \n4.Exit\n5.Test<<<\n");
+                case 4:
+                        printf("1.New Game\n2.Select Map\n3.Map Creator\n4.About\n5.Exit<<<\n6.Test\n");
+                        break;
+                case 5:
+                        printf("1.New Game\n2.Select Map \n3.Map Creator\n4.About\n5.Exit\n6.Test<<<\n");
                         break;
             }
 }
@@ -84,7 +88,7 @@ int menu(int a)
 
 int main()
 {
-    int Select=0,level=1;
+    int Select=0;
     while(1)
     {
         Select=menu(Select);
@@ -102,13 +106,18 @@ int main()
                 break;
             case 2:
                 system("clear");
-                printf("Test3");
+                printf("Creator");
                 mygetch();
                 break;
             case 3:
                 system("clear");
-                return 0;
+                printf("Test3");
+                mygetch();
+                break;
             case 4:
+                system("clear");
+                return 0;
+            case 5:
                 system("clear");
                 printf("Developers");
                 mygetch();
