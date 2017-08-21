@@ -14,7 +14,7 @@ const int menucount = 5;
 #define TAB 9
 
 
-int mygetch( ) 
+int getch( ) 
 {
     struct termios oldt,
                    newt;
@@ -66,7 +66,7 @@ int menu(int a)
         system("clear");
         printf("\t\t The Game \n\n");
         menulist(a);
-        temp=mygetch();
+        temp=getch();
         switch (temp)
         {
             case ENTER:
@@ -97,22 +97,22 @@ int main()
             case 0:
                 system("clear");
                 printf("Test1");
-                mygetch();
+                getch();
                 break;
             case 1:
                 system("clear");
                 printf("Test2");
-                mygetch();
+                getch();
                 break;
             case 2:
                 system("clear");
                 printf("Creator");
-                mygetch();
+                getch();
                 break;
             case 3:
                 system("clear");
                 printf("Test3");
-                mygetch();
+                getch();
                 break;
             case 4:
                 system("clear");
@@ -120,14 +120,14 @@ int main()
             case 5:
                 system("clear");
                 printf("Developers");
-                mygetch();
+                getch();
                 break;
             default:
                     printf("Error");
-                    mygetch();
+                    getch();
                     return 0;
         }
     }
-    mygetch();
+    getch();
     return 1;
 }
