@@ -14,7 +14,8 @@ const int menucount = 4;
 #define TAB 9
 
 
-int mygetch( ) {
+int mygetch( ) 
+{
     struct termios oldt,
                    newt;
     int ch;
