@@ -66,13 +66,13 @@ int escMenu()
         switch(current)
         {
             case(0):
-                printf(" @1.Save and Quit@\n 2.Quit without saving\n 3.Cancel");
+                printf(" 1.Save and Quit<<<\n 2.Quit without saving\n 3.Cancel");
                 break;
             case(1):
-                printf(" 1.Save and Quit\n @2.Quit without saving@\n 3.Cancel");
+                printf(" 1.Save and Quit\n 2.Quit without saving<<<\n 3.Cancel");
                 break;     
             case(2):
-                printf(" 1.Save and Quit\n 2.Quit without saving\n @3.Cancel@");
+                printf(" 1.Save and Quit\n 2.Quit without saving\n 3.Cancel<<<");
                 break;             
         }
         temp = getch();

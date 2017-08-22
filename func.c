@@ -21,7 +21,7 @@ int much_maps()
     int a=0;
     FILE *file;
     char string[30];char temp;
-    file = fopen("maps", "r");
+    file = fopen("catalog.txt", "r"); //Тут менять название файла с картами.
     while(fscanf(file,"%s",string)!=EOF)
         a++;
     fclose(file);
@@ -35,10 +35,10 @@ int Select_map()  //Тут можно будет исправить постоя
     int a=1, mapcount=much_maps(),flag;
     FILE *file;
     char string[30],temp;
-    //file = fopen("maps", "r");
+    //file = fopen("catalog.txt", "r");
     while(1)
     {
-        file=fopen("maps","r");
+        file=fopen("catalog.txt","r");
         system("clear");
         printf("\t\tChoice the map\n");
         flag=1;
