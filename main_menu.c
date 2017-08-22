@@ -1,4 +1,5 @@
 //work with maps
+//void menu_click() Call this
 
 
 
@@ -92,7 +93,7 @@ void menulist(int a)
 }
 
 
-int menu(int a)
+int menuselect(int a)
 {
     char temp;
     while(1)
@@ -118,5 +119,55 @@ int menu(int a)
                     a++;
         }
     }
+}
+
+
+void menu()  //Call this
+{
+    int Select=0,level=1;
+    while(1)
+    {
+        Select=menuselect(Select);
+        switch (Select)
+        {
+            case 0:
+                system("clear");
+                printf("Test1");
+                getch();
+                break;
+            case 1:
+                system("clear");
+                level=Select_map();
+                printf("%d",level);
+                getch();
+                break;
+            case 2:
+                system("clear");
+                mapGenerator();
+                break;
+            case 3:
+                system("clear");
+                printf("Test3");
+
+                getch();
+                break;
+            case 4:
+                system("clear");
+                return;
+            case 5:
+                system("clear");
+                printf("Developers");
+                int op=much_maps();
+                printf("\n\n%d\n\n",op);
+                getch();
+                break;
+            default:
+                printf("Error");
+                getch();
+                return;
+        }
+    }
+    getch();
+    return;
 }
 

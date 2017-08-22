@@ -27,53 +27,11 @@ int getch( )
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
     return ch;
 }
-#include "main_menu.c"
 #include "Generator.c"
+#include "main_menu.c"
 
 int main()
 {
-    int Select=0,level=1;
-    while(1)
-    {
-        Select=menu(Select);
-        switch (Select)
-        {
-            case 0:
-                system("clear");
-                printf("Test1");
-                getch();
-                break;
-            case 1:
-                system("clear");
-                level=Select_map();
-                printf("%d",level);
-                getch();
-                break;
-            case 2:
-                system("clear");
-                mapGenerator();
-                break;
-            case 3:
-                system("clear");
-                printf("Test3");
-                getch();
-                break;
-            case 4:
-                system("clear");
-                return 0;
-            case 5:
-                system("clear");
-                printf("Developers");
-                int op=much_maps();
-                printf("\n\n%d\n\n",op);
-                getch();
-                break;
-            default:
-                    printf("Error");
-                    getch();
-                    return 0;
-        }
-    }
-    getch();
+    menu();
     return 1;
 }
