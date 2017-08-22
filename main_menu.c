@@ -16,15 +16,15 @@ int much_maps()
 
 
 
-int Select_map()  //Тут можно будет исправить постоянное чтение из файла на чтение из памяти.
+int Select_map()
 {
     int a=1, mapcount=much_maps(),flag;
     FILE *file;
     char string[30],temp;
-    //file = fopen("catalog.txt", "r");
+    file = fopen("catalog.txt", "r");
     while(1)
     {
-        file=fopen("catalog.txt","r");
+        fseek(file,0,SEEK_SET);
         system("clear");
         printf("\t\tChoice the map\n");
         flag=1;
@@ -36,11 +36,11 @@ int Select_map()  //Тут можно будет исправить постоя
             flag++;
             printf("\n");
         }
-        fclose(file);
         temp=getch();
         switch (temp)
         {
             case ENTER:
+                fclose(file);
                 return a;
             case W:
                 if((a<=1)||(a>mapcount))
@@ -55,7 +55,6 @@ int Select_map()  //Тут можно будет исправить постоя
                     a++;
         }
     }
-    return 0;
 }
 
 

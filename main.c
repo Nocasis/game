@@ -13,7 +13,6 @@ const int menucount = 5;
 #define ENTER 10 
 #define TAB 9
 
-#include "main_menu.c"
 
 int getch( ) 
 {
@@ -28,6 +27,7 @@ int getch( )
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
     return ch;
 }
+#include "main_menu.c"
 
 
 int main()
