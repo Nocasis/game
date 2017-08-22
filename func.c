@@ -30,7 +30,7 @@ int much_maps()
 
 
 
-int Select_map()
+int Select_map()  //Тут можно будет исправить постоянное чтение из файла на чтение из памяти.
 {
     int a=1, mapcount=much_maps(),flag;
     FILE *file;
