@@ -1,5 +1,5 @@
 //work with maps
-//void menu_click() Call this
+//void menu() Call this
 
 
 
