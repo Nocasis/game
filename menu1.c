@@ -30,6 +30,64 @@ int getch( )
 
 
 
+int much_maps()
+{
+    int a=0;
+    FILE *file;
+    char string[30];char temp;
+    file = fopen("maps", "r");
+    while(fscanf(file,"%s",string)!=EOF)
+        a++;
+    fclose(file);
+    return a;
+}
+
+
+
+int Select_map()
+{
+    int a=1, mapcount=much_maps(),flag;
+    FILE *file;
+    char string[30],temp;
+    //file = fopen("maps", "r");
+    while(1)
+    {
+        file=fopen("maps","r");
+        system("clear");
+        printf("\t\tChoice the map\n");
+        flag=1;
+        while(fscanf(file,"%s",string)!=EOF)
+        {
+            printf("%s",string);
+            if(flag==a)
+                printf("<<<");
+            flag++;
+            printf("\n");
+        }
+        fclose(file);
+        temp=getch();
+        switch (temp)
+        {
+            case ENTER:
+                return a;
+            case W:
+                if((a<=1)||(a>mapcount))
+                    a=mapcount;
+                else
+                    a--;
+                break;
+            case S:
+                if((a<1)||(a>=mapcount))
+                    a=1;
+                else
+                    a++;
+        }
+    }
+    return 0;
+}
+
+
+
 void menulist(int a)
 {
     switch(a)
@@ -88,7 +146,7 @@ int menu(int a)
 
 int main()
 {
-    int Select=0;
+    int Select=0,level=1;
     while(1)
     {
         Select=menu(Select);
@@ -101,7 +159,8 @@ int main()
                 break;
             case 1:
                 system("clear");
-                printf("Test2");
+                level=Select_map();
+                printf("%d",level);
                 getch();
                 break;
             case 2:
@@ -120,6 +179,8 @@ int main()
             case 5:
                 system("clear");
                 printf("Developers");
+                int op=much_maps();
+                printf("\n\n%d\n\n",op);
                 getch();
                 break;
             default:
