@@ -28,7 +28,7 @@ int getch( )
     return ch;
 }
 #include "main_menu.c"
-
+#include "Generator.c"
 
 int main()
 {
@@ -51,8 +51,7 @@ int main()
                 break;
             case 2:
                 system("clear");
-                printf("Creator");
-                getch();
+                mapGenerator();
                 break;
             case 3:
                 system("clear");

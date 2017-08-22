@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> //malloc
+#include <string.h>
 
 //catalog of the maps
 #define list "catalog.txt"
@@ -12,7 +13,7 @@
 #define S 115
 #define D 100
 #define SPACE 32
-#define ENTER 13
+#define ENTER 10
 #define TAB 9
 
 
@@ -48,7 +49,7 @@ int getValue(char *value, int left, int right)
     int result;
     do
     {
-        system("cls");
+        system("clear");
         printf("Enter the %s of the map [%d; %d]\n",value,left,right);
         scanf("%d",&result);
         if( (result>=left) && (result<=right) )
@@ -62,7 +63,7 @@ int escMenu()
     char temp;          //last button pressed
     do
     {
-        system("cls");
+        system("clear");
         switch(current)
         {
             case(0):
@@ -194,7 +195,7 @@ void generate(char *name)
     short unsigned int sym[total]={empty,wall,finish,coins,enemy,spawn}; //actualy is useless, may be it should be removed later
     do                                                             //it can be usefull if we decide create map with the symbols and not from numbers
     {
-        system("cls");
+        system("clear");
         mapPrint(height, width, map, mode, x, y, symPos); //it print the map [height][width] wtih mode (SYMbols or NUMbers) and on X,Y position put symPos        
         button=getch(); //what button pressed?
         switch(button)
@@ -218,14 +219,14 @@ void generate(char *name)
                             fclose(gen);
                             flag=0;
                             add(name);
-                            system("cls");
+                            system("clear");
                             printf("Map is succesfull saved\n");
                             getch();
                             break;
                         }
                         else
                         {
-                            system("cls");
+                            system("clear");
                             printf("You should put at least 1 finish-block(2/@) and 1 spawn-block(5/S) \n");
                             getch();
                             break;                            
@@ -233,7 +234,7 @@ void generate(char *name)
 
                     case(1):        //Quit without saving
                         flag=0;
-                        system("cls");
+                        system("clear");
                         break;
                     //case(2):                                                 
                 }
@@ -353,7 +354,7 @@ void mapGenerator()
     
     do//repeat until the mapname wil be input correct (presently it check only matches in catalog)
     {
-        system("cls");
+        system("clear");
         printf("Enter map name (without .txt)\n");
         scanf("%s",mapName);
         strcat(mapName,format); // mapName = <mapName>+<.txt>
@@ -362,7 +363,7 @@ void mapGenerator()
         break;
         else
         {
-            system("cls");
+            system("clear");
             printf("Incorrect name\n");
             getch();
         }

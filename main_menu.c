@@ -39,6 +39,9 @@ int Select_map()
         temp=getch();
         switch (temp)
         {
+            case ESC:
+                fclose(file);
+                return a=0;
             case ENTER:
                 fclose(file);
                 return a;
