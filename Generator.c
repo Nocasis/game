@@ -41,7 +41,7 @@ void generate(char *name);
 void mapPrint(int height, int width, int **map, int mode, int x, int y, int symPos);
 
 int checkMapName(char *mapname);
-void add(char *name);
+void add(char *mapname);
 
 
 int getValue(char *value, int left, int right)
@@ -117,9 +117,9 @@ int Check(int height, int width, int **map, int check)
 void mapPrint(int height, int width, int **map, int mode, int x, int y, int symPos)
 {
     int i,j, temp;
-    temp = map[x][y];   //карту передаем по ссылке, значит работаем непосредственно с ней а не с еЄ копией
-    map[x][y]=symPos;   //поэтому приходитс€ делать такой костыль, чтобы не писать лишний здоровый блок свитч-кейс
-                        //мой английский слишком слаб чтобы объ€сн€ть такие костыли :)
+    temp = map[x][y];   //it worked with the map, not with a copy
+    map[x][y]=symPos;   //so... i have to do this
+                        
     for (i=0; i<height; i++)
     {
         for (j=0; j<width; j++)
@@ -276,7 +276,7 @@ void generate(char *name)
                 if(mode==SYM) mode=NUM; //sad, but this compiler dont support bool type, so i have to do this
                 else mode=SYM;
                 break;
-            case(49):   // 1 (мб тут можно сделать один кейс?)
+            case(49):   // 1 
                 symPos=0;
                 break;
             case(50):   // 2
@@ -303,48 +303,38 @@ void generate(char *name)
     free(map);
 }
 
-///////////////////////////////////////////
-//возможно стоит вынести в отдельный блок//
-///////////////////////////////////////////
 
-
-//функци€ проверки наличи€ указанного имени карты в файле-каталоге, возвращает 0 - карта с таким названием уже есть, 1 - такой карты нет
 int checkMapName(char *mapname)
 {
-//открыть файл-оглавление
+
     FILE *catalog = fopen(list,"r");
     char getName[64];
-//если не удаЄтс€ открыть - выдать сообщение об ошибке, вернуть 0
-//upd. создать каталог, вернуть 1
-    if(catalog==NULL)
+
+    if(catalog==NULL) //if there is no file
     {
-        /*printf("File %s not found\n",list);
-        getch();*/
-        freopen(list,"w",catalog);
-        return 1;
+        freopen(list,"w",catalog);  //create it
+        return 1;                   //return 1 because the catalog is empty
     }
 
-//в цикле просматривать построчно
     do
     {     
-        fscanf(catalog,"%s", getName);
-//если найдено значение совпадающее с заданным, закрыть файл, вернуть 0           
+        fscanf(catalog,"%s", getName);     
         if(strcmp(getName,mapname)==0)
         {
             fclose(catalog);
             return 0;
         }
     }while(!feof(catalog));
-//если конец файла, закрыть файл, вернуть 1
+    
     fclose(catalog);
-    return 1;      
+    return 1;        
 }
 
-//функци€ добавлени€ названи€ карты в каталог
-void add(char *name)
+//add map in catalog
+void add(char *mapname)
 {
     FILE *catalog = fopen(list,"a");
-    fprintf(catalog,"%s \n",name);
+    fprintf(catalog,"%s \n",mapname);
     fclose(catalog);
 }
 
