@@ -31,17 +31,23 @@ int getch( )
 }
 
 
-char *Selected(int level)
+void Selected(int level,char *map_name)
 {
     FILE *file;
-    char *string;
     file=fopen("catalog.txt","r");
     for(int i=0;i<level;i++)  //Тут нужно бдует исправить
-        fscanf(file,"%s",string);
+        fscanf(file,"%s",map_name);
     fclose(file);
-    return string;
 }
 
+
+
+void Map_mass(int **Map,int n,int m)
+{
+Map=(int**)malloc(n*sizeof(int*));
+        for(int i=0;i<n;i++)
+            Map[i]=(int*)malloc(m*sizeof(int));
+}
 
 
 
@@ -50,12 +56,36 @@ int main(int level)
     FILE *map;
     int i,j;
     int GX,GY;
-    int hpGG=100, attackGG=17, defenceGG=10;
     int WX, WY;
+    int **Map;
     char *level_name;
-    level_name=Selected(2);
-    printf("%s",level_name);
-    //map=fopen(level_name,"r");
-    //fclose(map);
+
+    level_name=(char*)malloc(30*sizeof(char));
+    Selected(2,level_name);
+    map=fopen(level_name,"r");
+    free(level_name);
+    fscanf(map,"%d",&i);
+    fscanf(map,"%d",&j);
+    Map_mass(Map,i,j);
+    //Map[0][0]=0;
+    //printf("%d",Map[0][0]);
+    /*for (int x=0;x<i;x++)
+        for(int y=0;y<j;y++)
+        {
+            fscanf(map,"%d",&Map[x][y]);
+            if (Map[x][y]==2)
+            {
+                GX=x;
+                GY=y;
+            }
+            if (Map[x][y]==3)
+            {
+                WX=x;
+                WY=y;
+            }
+        }
+*/
+
+    fclose(map);
     return 0;
 }
