@@ -41,14 +41,70 @@ void Selected(int level,char *map_name)
 }
 
 
+//void move(int **Map
 
-void Map_mass(int **Map,int n,int m)
+
+
+int print_map(int **Map,int i,int j,FILE *map)
 {
-Map=(int**)malloc(n*sizeof(int*));
-        for(int i=0;i<n;i++)
-            Map[i]=(int*)malloc(m*sizeof(int));
-}
+    int GX,GY;
+    int WX,WY;
+    int hpGG=100,attackGG=17,defenceGG=10;
+    int score=0;
+    for (int x=0;x<i;x++)
+        for(int y=0;y<j;y++)
+        {
+            fscanf(map,"%d",&Map[x][y]);
+            if (Map[x][y]==2)
+            {
+                GX=x;
+                GY=y;
+            }
+            if (Map[x][y]==3)
+            {
+                WX=x;
+                WY=y;
+            }
+        }
+    while(1)
+    {
+        system("clear");
+        printf("Your score %6.1d\n\n",score);
+        printf("Your health points %6.1d\n\n",hpGG);
+        
+        for (int x=0;x<i;x++)
+        {   
+            for(int y=0;y<j;y++)
+            {
+                switch(Map[x][y])
+                {
+                    case 0:
+                        printf(" ");
+                        break;
+                    case 1:
+                        printf("#");
+                        break;
+                    case 2:
+                        printf("@");
+                        break;
+                    case 3:
+                        printf("$");
+                        break;
+                    case 4:
+                        printf("?");
+                        break;
+                    case 5:
+                        printf("E");
+                        break;
+                }
+            }
+            printf("\n");
+        }
+    }
 
+        return 1;
+
+}
 
 
 int main(int level)
@@ -66,26 +122,11 @@ int main(int level)
     free(level_name);
     fscanf(map,"%d",&i);
     fscanf(map,"%d",&j);
-    Map_mass(Map,i,j);
-    //Map[0][0]=0;
-    //printf("%d",Map[0][0]);
-    /*for (int x=0;x<i;x++)
-        for(int y=0;y<j;y++)
-        {
-            fscanf(map,"%d",&Map[x][y]);
-            if (Map[x][y]==2)
-            {
-                GX=x;
-                GY=y;
-            }
-            if (Map[x][y]==3)
-            {
-                WX=x;
-                WY=y;
-            }
-        }
-*/
+    Map=(int**)malloc(j*sizeof(int*));
+        for(int k=0;k<j;k++)
+            Map[k]=(int*)malloc(i*sizeof(int));
 
+    int joke=move(Map,j,i,map);
     fclose(map);
     return 0;
 }
