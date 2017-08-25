@@ -38,6 +38,7 @@ char *Selected(int level)
     file=fopen("catalog.txt","r");
     for(int i=0;i<level;i++)  //Тут нужно бдует исправить
         fscanf(file,"%s",string);
+    fclose(file);
     return string;
 }
 
@@ -49,19 +50,12 @@ int main(int level)
     FILE *map;
     int i,j;
     int GX,GY;
-    int hpGG=100, attackGG=17, defenceGG=10; //Тут я ошибки исправляю и тещу всякую дичь, например пытаюсь прочитать ЕБАННЫЙ РАЗМЕР ЕБАННОЙ КАРТЫ.
+    int hpGG=100, attackGG=17, defenceGG=10;
     int WX, WY;
     char *level_name;
     level_name=Selected(2);
     printf("%s",level_name);
-    map=fopen(level_name,"r");
-    fscanf(map,"%d",&i);
-    //printf("%s",level_name);
-    //i=atoi(level_name);
-    //fscanf(map,"%s",temp);
-    //j=atoi(temp);
-    //fscanf(map,"%d",&j);
-    //printf("%d %d",i,j);
-    fclose(map);
+    //map=fopen(level_name,"r");
+    //fclose(map);
     return 0;
 }
