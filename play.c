@@ -138,14 +138,8 @@ void main(int level)
     fclose(map);
     while(1)
     {
-<<<<<<< HEAD
     print_stat(score,hpGG,gold);
     print_map(Map,i,j,GGxy);
     getch();
-=======
-        print_stat(score,hpGG,gold);
-        print_map(Map,i,j);
-        getch();
->>>>>>> 46e39751c91e5b70ac539ad6a8279ffa4758f44a
     }
 }
