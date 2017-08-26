@@ -14,12 +14,6 @@
 #define SPACE 32
 #define ENTER 10 
 #define TAB 9
-#define empty 0
-#define wall 1
-#define finish 2
-#define coins 3
-#define enemy 4
-#define spawn 5
 
 
 int getch( ) 
@@ -47,6 +41,7 @@ void Selected(int level,char *map_name)
 }
 
 
+//void move(int **Map
 
 
 
@@ -60,86 +55,78 @@ void print_stat(int score,int hpGG,int gold)
 
 
 
-void print_map(int **Map,int i,int j,int GGxy[2])
+void print_map(int **Map,int i,int j)
 { 
-        for (int x=0;x<i;x++)
+        for (int x=0;x<j;x++)
         {   
-            for(int y=0;y<j;y++)
+            for(int y=0;y<i;y++)
             {
-                if((x==GGxy[0])&&(y==GGxy[1]))
-                {
-                    printf("P");
-                    continue;
-                }
                 switch(Map[x][y])
                 {
-                    case (empty):
+                    case 0:
                         printf(" ");
                         break;
-                    case (wall):
+                    case 1:
                         printf("#");
                         break;
-                    case (finish):
+                    case 2:
                         printf("@");
                         break;
-                    case (coins):
+                    case 3:
                         printf("$");
                         break;
-                    case (spawn):
-                        printf(" ");
+                    case 4:
+                        printf("?");
                         break;
-                    case (enemy):
+                    case 5:
                         printf("E");
                         break;
                 }
             }
             printf("\n");
         }
-        GGxy[0]--;
-        GGxy[1]++;
 }
 
-void move();
 
 void main(int level)
 {
     FILE *map;
     int i,j,x,y;
-    int GGxy[2];
-    int EXITxy[2];
+    int GGxy[2]={1};
+    int EXITxy[2]={0};
     int **Map;
     char *level_name;
     int gold=0,score=0,hpGG=100;
 
     level_name=(char*)malloc(30*sizeof(char));
-    Selected(3,level_name);
+    Selected(2,level_name);
     map=fopen(level_name,"r");
     free(level_name);
-    fscanf(map,"%d",&j);
     fscanf(map,"%d",&i);
-    Map=(int**)malloc(i*sizeof(int*));
-        for(int k=0;k<i;k++)
-            Map[k]=(int*)malloc(j*sizeof(int));
-    for (x=0;x<i;x++)
-        for(y=0;y<j;y++)
+    fscanf(map,"%d",&j);
+    Map=(int**)malloc(j*sizeof(int*));
+        for(int k=0;k<j;k++)
+            Map[k]=(int*)malloc(i*sizeof(int));
+    for (x=0;x<j;x++)
+        for(y=0;y<i;y++)
         {
             fscanf(map,"%d",&Map[x][y]);
-            if (Map[x][y]==spawn)
+            if (Map[x][y]==2)
             {
-                GGxy[0]=y;
-                GGxy[1]=x;
+                GGxy[0]=x;
+                GGxy[1]=y;
             }
-            if (Map[x][y]==finish)
+            if (Map[x][y]==3)
             {
-                EXITxy[0]=y;
-                EXITxy[1]=x;
+                EXITxy[0]=x;
+                EXITxy[1]=y;
             }
         }
     fclose(map);
     while(1)
     {
     print_stat(score,hpGG,gold);
-    print_map(Map,i,j,GGxy);
+    print_map(Map,i,j);
     getch();
     }
 }
