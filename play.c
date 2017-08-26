@@ -125,8 +125,8 @@ void main(int level)
     fclose(map);
     while(1)
     {
-    print_stat(score,hpGG,gold);
-    print_map(Map,i,j);
-    getch();
+        print_stat(score,hpGG,gold);
+        print_map(Map,i,j);
+        getch();
     }
 }
