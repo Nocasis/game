@@ -45,36 +45,21 @@ void Selected(int level,char *map_name)
 
 
 
-int print_map(int **Map,int i,int j,FILE *map)
+void print_stat(int score,int hpGG,int gold)
 {
-    int GX,GY;
-    int WX,WY;
-    int hpGG=100,attackGG=17,defenceGG=10;
-    int score=0;
-    for (int x=0;x<i;x++)
-        for(int y=0;y<j;y++)
-        {
-            fscanf(map,"%d",&Map[x][y]);
-            if (Map[x][y]==2)
-            {
-                GX=x;
-                GY=y;
-            }
-            if (Map[x][y]==3)
-            {
-                WX=x;
-                WY=y;
-            }
-        }
-    while(1)
-    {
-        system("clear");
-        printf("Your score %6.1d\n\n",score);
-        printf("Your health points %6.1d\n\n",hpGG);
-        
-        for (int x=0;x<i;x++)
+    system("clear");
+    printf("Your score %6.1d\n\n",score);
+    printf("Your health %6.1d\n\n",hpGG);
+    printf("Your gold %6.1d\n\n",gold);
+}
+
+
+
+void print_map(int **Map,int i,int j)
+{ 
+        for (int x=0;x<j;x++)
         {   
-            for(int y=0;y<j;y++)
+            for(int y=0;y<i;y++)
             {
                 switch(Map[x][y])
                 {
@@ -100,21 +85,18 @@ int print_map(int **Map,int i,int j,FILE *map)
             }
             printf("\n");
         }
-    }
-
-        return 1;
-
 }
 
 
-int main(int level)
+void main(int level)
 {
     FILE *map;
-    int i,j;
-    int GX,GY;
-    int WX, WY;
+    int i,j,x,y;
+    int GGxy[2]={1};
+    int EXITxy[2]={0};
     int **Map;
     char *level_name;
+    int gold=0,score=0,hpGG=100;
 
     level_name=(char*)malloc(30*sizeof(char));
     Selected(2,level_name);
@@ -125,8 +107,26 @@ int main(int level)
     Map=(int**)malloc(j*sizeof(int*));
         for(int k=0;k<j;k++)
             Map[k]=(int*)malloc(i*sizeof(int));
-
-    int joke=move(Map,j,i,map);
+    for (x=0;x<j;x++)
+        for(y=0;y<i;y++)
+        {
+            fscanf(map,"%d",&Map[x][y]);
+            if (Map[x][y]==2)
+            {
+                GGxy[0]=x;
+                GGxy[1]=y;
+            }
+            if (Map[x][y]==3)
+            {
+                EXITxy[0]=x;
+                EXITxy[1]=y;
+            }
+        }
     fclose(map);
-    return 0;
+    while(1)
+    {
+    print_stat(score,hpGG,gold);
+    print_map(Map,i,j);
+    getch();
+    }
 }
