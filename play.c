@@ -62,16 +62,16 @@ void print_stat(int score,int hpGG,int gold)
 
 void print_map(int **Map,int i,int j,int GGxy[2])
 { 
-        for (int x=0;x<i;x++)
+        for (int y=0;y<i;y++)
         {   
-            for(int y=0;y<j;y++)
+            for(int x=0;x<j;x++)
             {
                 if((x==GGxy[0])&&(y==GGxy[1]))
                 {
                     printf("P");
                     continue;
                 }
-                switch(Map[x][y])
+                switch(Map[y][x])
                 {
                     case (empty):
                         printf(" ");
@@ -95,28 +95,67 @@ void print_map(int **Map,int i,int j,int GGxy[2])
             }
             printf("\n");
         }
-        GGxy[0]--;
-        GGxy[1]++;
 }
 
-void move();
 
-void main(int level)
+
+int EXIT()
+{
+    int temp,a=1;
+    system("clear");
+    while(1)
+    {
+        system("clear");
+        switch(a)
+        {
+            case 1:
+                printf("Do you want to leave?\nYes<<<\nNo\n");
+                break;
+            case 0:
+                printf("Do you want to leave?\nYes\nNo<<<\n");
+                break;
+        }
+        temp=getch();
+        switch(temp)
+        {
+            case W:
+                a++;
+                if(a>1)
+                    a=0;
+                break;
+            case S:
+                a--;
+                if(a<0)
+                    a=1;
+                break;
+            case ENTER:
+                return a;
+        }
+    }
+}
+
+
+
+
+
+
+int main(int level)
 {
     FILE *map;
     int i,j,x,y;
     int GGxy[2];
-    int EXITxy[2];
+    int exit;
     int **Map;
     char *level_name;
+    int temp;
     int gold=0,score=0,hpGG=100;
 
     level_name=(char*)malloc(30*sizeof(char));
-    Selected(3,level_name);
+    Selected(2,level_name);
     map=fopen(level_name,"r");
     free(level_name);
-    fscanf(map,"%d",&j);
-    fscanf(map,"%d",&i);
+    fscanf(map,"%d",&j);//Кол-во столбцов
+    fscanf(map,"%d",&i);//Кол-во строк
     Map=(int**)malloc(i*sizeof(int*));
         for(int k=0;k<i;k++)
             Map[k]=(int*)malloc(j*sizeof(int));
@@ -126,20 +165,99 @@ void main(int level)
             fscanf(map,"%d",&Map[x][y]);
             if (Map[x][y]==spawn)
             {
-                GGxy[0]=y;
-                GGxy[1]=x;
-            }
-            if (Map[x][y]==finish)
-            {
-                EXITxy[0]=y;
-                EXITxy[1]=x;
+                GGxy[0]=x;
+                GGxy[1]=y;
             }
         }
     fclose(map);
     while(1)
     {
-    print_stat(score,hpGG,gold);
-    print_map(Map,i,j,GGxy);
-    getch();
+        print_stat(score,hpGG,gold);
+        print_map(Map,i,j,GGxy);
+        temp=getch();
+        switch(temp)
+        {
+            case ESC:
+                exit=EXIT();
+                if(exit==1)
+                    return 0;
+                break;
+            case W:
+                switch(Map[GGxy[0]][GGxy[1]-1])
+                {
+                    case empty:
+                        GGxy[1]--;
+                        break;
+                    case spawn:
+                        GGxy[1]--;
+                        break;
+                    case wall:
+                        break;
+                    case enemy:
+                        break;//Тут добавить файт
+                    case coins:
+                        break;//Тут добавить лут чего-либо
+                    case finish:
+                        return 1;
+                }
+                break;
+            case S:
+                switch(Map[GGxy[0]][GGxy[1]+1])
+                {
+                    case empty:
+                        GGxy[1]++;
+                        break;
+                    case spawn:
+                        GGxy[1]++;
+                        break;
+                    case wall:
+                        break;
+                    case enemy:
+                        break;//Тут добавить файт
+                    case coins:
+                        break;//Тут добавить лут чего-либо
+                    case finish:
+                        return 1;
+                }
+                break;
+            case A:
+                switch(Map[GGxy[0]-1][GGxy[1]])
+                {
+                    case empty:
+                        GGxy[0]--;
+                        break;
+                    case spawn:
+                        GGxy[0]--;
+                        break;
+                    case wall:
+                        break;
+                    case enemy:
+                        break;//Тут добавить файт
+                    case coins:
+                        break;//Тут добавить лут чего-либо
+                    case finish:
+                        return 1;
+                }
+                break;
+            case D:
+                switch(Map[GGxy[0]+1][GGxy[1]])
+                {
+                    case empty:
+                        GGxy[0]++;
+                        break;
+                    case spawn:
+                        GGxy[0]++;
+                        break;
+                    case wall:
+                        break;
+                    case enemy:
+                        break;//Тут добавить файт
+                    case coins:
+                        break;//Тут добавить лут чего-либо
+                    case finish:
+                        return 1;
+                }
+                break;
+        }
     }
 }
