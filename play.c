@@ -62,16 +62,16 @@ void print_stat(int score,int hpGG,int gold)
 
 void print_map(int **Map,int i,int j,int GGxy[2])
 { 
-        for (int y=0;y<i;y++)
+        for (int x=0;x<i;x++)
         {   
-            for(int x=0;x<j;x++)
+            for(int y=0;y<j;y++)
             {
                 if((x==GGxy[0])&&(y==GGxy[1]))
                 {
                     printf("P");
                     continue;
                 }
-                switch(Map[y][x])
+                switch(Map[x][y])
                 {
                     case (empty):
                         printf(" ");
@@ -183,44 +183,6 @@ int main(int level)
                     return 0;
                 break;
             case W:
-                switch(Map[GGxy[0]][GGxy[1]-1])
-                {
-                    case empty:
-                        GGxy[1]--;
-                        break;
-                    case spawn:
-                        GGxy[1]--;
-                        break;
-                    case wall:
-                        break;
-                    case enemy:
-                        break;//Тут добавить файт
-                    case coins:
-                        break;//Тут добавить лут чего-либо
-                    case finish:
-                        return 1;
-                }
-                break;
-            case S:
-                switch(Map[GGxy[0]][GGxy[1]+1])
-                {
-                    case empty:
-                        GGxy[1]++;
-                        break;
-                    case spawn:
-                        GGxy[1]++;
-                        break;
-                    case wall:
-                        break;
-                    case enemy:
-                        break;//Тут добавить файт
-                    case coins:
-                        break;//Тут добавить лут чего-либо
-                    case finish:
-                        return 1;
-                }
-                break;
-            case A:
                 switch(Map[GGxy[0]-1][GGxy[1]])
                 {
                     case empty:
@@ -239,14 +201,52 @@ int main(int level)
                         return 1;
                 }
                 break;
-            case D:
+            case S:
                 switch(Map[GGxy[0]+1][GGxy[1]])
                 {
                     case empty:
                         GGxy[0]++;
                         break;
                     case spawn:
-                        GGxy[0]++;
+                        GGxy[1]++;
+                        break;
+                    case wall:
+                        break;
+                    case enemy:
+                        break;//Тут добавить файт
+                    case coins:
+                        break;//Тут добавить лут чего-либо
+                    case finish:
+                        return 1;
+                }
+                break;
+            case A:
+                switch(Map[GGxy[0]][GGxy[1]-1])
+                {
+                    case empty:
+                        GGxy[1]--;
+                        break;
+                    case spawn:
+                        GGxy[1]--;
+                        break;
+                    case wall:
+                        break;
+                    case enemy:
+                        break;//Тут добавить файт
+                    case coins:
+                        break;//Тут добавить лут чего-либо
+                    case finish:
+                        return 1;
+                }
+                break;
+            case D:
+                switch(Map[GGxy[0]][GGxy[1]+1])
+                {
+                    case empty:
+                        GGxy[1]++;
+                        break;
+                    case spawn:
+                        GGxy[1]++;
                         break;
                     case wall:
                         break;
