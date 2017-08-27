@@ -7,8 +7,10 @@ int much_maps()
 {
     int a=0;
     FILE *file;
-    char string[30];char temp;
+    char string[30];
     file = fopen("catalog.txt", "r"); //Тут менять название файла с картами.
+    if(file==NULL)
+        return 0;
     while(fscanf(file,"%s",string)!=EOF)
         a++;
     fclose(file);
