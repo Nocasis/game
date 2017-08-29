@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> //malloc
-//#include <conio.h> //getch()
 
 #define file "profiles.txt"
 
@@ -25,12 +24,10 @@ char *profile_menu(); //call this (it return current profile_name)
 //name=profile_menu();
 
 
-int check_profile(char *profile);   //проверить есть ли такой профиль
-void add_profile(char *profile);    //добавить профиль в каталог
-int much_profiles();                //количество профилей в каталоге
-int getValue(char *name, char* filename);
-
-char *new_profile();                 //создание новго профиля
+int check_profile(char *profile);   //Check profile availabiliy
+void add_profile(char *profile);    //Add profile to directory
+int much_profiles();                //Profiles count
+char *new_profile();                 //Create new profile (it return created profile_name)
 
 
 
@@ -118,7 +115,7 @@ char *profile_menu()
                     break;                    
                 }
 ////////////////////////////////////////////////////////////////////                
-                while(1)
+                while(1)//it needs to refactoring
                 {
                     char password[len];
                     system("cls");
@@ -234,7 +231,6 @@ int check_profile(char *profile)
     return 1;        
 }
 
-//add profile in catalog
 void add_profile(char *profile)
 {
     FILE *catalog = fopen(file,"a");
