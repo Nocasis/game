@@ -2,7 +2,6 @@
 #include <termios.h>
 #include <unistd.h>
 #include <stdlib.h>
-const int menucount = 5;
 
 #define ESC 27
 #define W 119

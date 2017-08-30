@@ -95,10 +95,10 @@ int EXIT()
         switch(a)
         {
             case 1:
-                printf("Do you want to leave?\nYes<<<\nNo\n");
+                printf("Do you want to leave?\n1.Yes<<<\n2.No\n");
                 break;
             case 0:
-                printf("Do you want to leave?\nYes\nNo<<<\n");
+                printf("Do you want to leave?\n1.Yes\n2.No<<<\n");
                 break;
         }
         temp=getch();
@@ -180,6 +180,9 @@ int play(int level)
                     case wall:
                         break;
                     case enemy:
+                        system("clear");
+                        fight_menu();
+                        getch();
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо
@@ -199,6 +202,9 @@ int play(int level)
                     case wall:
                         break;
                     case enemy:
+                        system("clear");
+                        fight_menu();
+                        getch();
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо
@@ -218,6 +224,9 @@ int play(int level)
                     case wall:
                         break;
                     case enemy:
+                        system("clear");
+                        fight_menu();
+                        getch();
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо
@@ -237,6 +246,9 @@ int play(int level)
                     case wall:
                         break;
                     case enemy:
+                        system("clear");
+                        fight_menu();
+                        getch();
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо

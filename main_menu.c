@@ -1,5 +1,6 @@
 //work with maps
 //void menu() Call this
+#include "fight.c"
 #include "play.c"
 
 
@@ -68,7 +69,7 @@ int Select_map()
 
 
 
-void menulist(int a)
+void menu_list(int a)
 {
     switch(a)
             {
@@ -95,14 +96,15 @@ void menulist(int a)
 }
 
 
-int menuselect(int a)
+int menu_select(int a)
 {
+    int menucount=5;
     char temp;
     while(1)
     {
         system("clear");
         printf("\t\t The Game \n\n");
-        menulist(a);
+        menu_list(a);
         temp=getch();
         switch (temp)
         {
@@ -129,7 +131,7 @@ void menu()  //Call this
     int Select=0,level=1;
     while(1)
     {
-        Select=menuselect(Select);
+        Select=menu_select(Select);
         switch (Select)
         {
             case 0:
