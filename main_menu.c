@@ -1,6 +1,6 @@
 //work with maps
 //void menu() Call this
-
+#include "play.c"
 
 
 int much_maps()
@@ -134,14 +134,14 @@ void menu()  //Call this
         {
             case 0:
                 system("clear");
-                printf("Test1");
+                int what_exit=play(level);
+                printf("%d",what_exit);
                 getch();
                 break;
             case 1:
                 system("clear");
                 level=Select_map();
-                printf("%d",level);
-                getch();
+                play(level);
                 break;
             case 2:
                 system("clear");

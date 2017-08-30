@@ -22,20 +22,6 @@
 #define spawn 5
 
 
-int getch( ) 
-{
-    struct termios oldt,
-                   newt;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldt );
-    newt = oldt;
-    newt.c_lflag &= ~( ICANON | ECHO );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newt );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
-    return ch;
-}
-
 
 void Selected(int level,char *map_name)
 {
@@ -139,7 +125,7 @@ int EXIT()
 
 
 
-int main(int level)
+int play(int level)
 {
     FILE *map;
     int i,j,x,y;
@@ -151,7 +137,7 @@ int main(int level)
     int gold=0,score=0,hpGG=100;
 
     level_name=(char*)malloc(30*sizeof(char));
-    Selected(2,level_name);
+    Selected(level,level_name);
     map=fopen(level_name,"r");
     free(level_name);
     fscanf(map,"%d",&j);//Кол-во столбцов
