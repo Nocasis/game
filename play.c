@@ -130,11 +130,14 @@ int play(int level)
     FILE *map;
     int i,j,x,y;
     int GGxy[2];
+    int GG[3]={100,25,8};
+    char profile_name[32]="Nocasis";
     int exit;
     int **Map;
     char *level_name;
     int temp;
-    int gold=0,score=0,hpGG=100;
+    int gold=0,score=0
+        ;
 
     level_name=(char*)malloc(30*sizeof(char));
     Selected(level,level_name);
@@ -158,7 +161,7 @@ int play(int level)
     fclose(map);
     while(1)
     {
-        print_stat(score,hpGG,gold);
+        print_stat(score,GG[0],gold);
         print_map(Map,i,j,GGxy);
         temp=getch();
         switch(temp)
@@ -181,8 +184,14 @@ int play(int level)
                         break;
                     case enemy:
                         system("clear");
-                        fight_menu();
-                        getch();
+                        exit=fight(GG,profile_name);
+                        if(exit==0)
+                        {
+                            GGxy[0]--;
+                            Map[GGxy[0]][GGxy[1]]=empty;
+                        }
+                        if(exit==2)
+                            return 0;
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо
@@ -197,14 +206,20 @@ int play(int level)
                         GGxy[0]++;
                         break;
                     case spawn:
-                        GGxy[1]++;
+                        GGxy[0]++;
                         break;
                     case wall:
                         break;
                     case enemy:
                         system("clear");
-                        fight_menu();
-                        getch();
+                        exit=fight(GG,profile_name);
+                        if(exit==0)
+                        {
+                            GGxy[0]++;
+                            Map[GGxy[0]][GGxy[1]]=empty;
+                        }
+                        if(exit==2)
+                            return 0;
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо
@@ -225,8 +240,14 @@ int play(int level)
                         break;
                     case enemy:
                         system("clear");
-                        fight_menu();
-                        getch();
+                        exit=fight(GG,profile_name);
+                        if(exit==0)
+                        {
+                            GGxy[1]--;
+                            Map[GGxy[0]][GGxy[1]]=empty;
+                        }
+                        if(exit==2)
+                            return 0;
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо
@@ -247,8 +268,14 @@ int play(int level)
                         break;
                     case enemy:
                         system("clear");
-                        fight_menu();
-                        getch();
+                        exit=fight(GG,profile_name);
+                        if(exit==0)
+                        {
+                            GGxy[1]++;
+                            Map[GGxy[0]][GGxy[1]]=empty;
+                        }
+                        if(exit==2)
+                            return 0;
                         break;//Тут добавить файт
                     case coins:
                         break;//Тут добавить лут чего-либо
