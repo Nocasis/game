@@ -6,6 +6,8 @@
 #include <limits.h>
 #include <string.h>
 
+#include "profiles.c"
+
 #define ESC 27
 #define W 119
 #define A 97
@@ -25,23 +27,24 @@
 
 void Selected(int level,char *map_name)
 {
-    FILE *file;
-    file=fopen("catalog.txt","r");
+    FILE *file_map;
+    file_map=fopen("catalog.txt","r");
     for(int i=0;i<level;i++)  //Тут нужно бдует исправить
-        fscanf(file,"%s",map_name);
-    fclose(file);
+        fscanf(file_map,"%s",map_name);
+    fclose(file_map);
 }
 
 
 
 
 
-void print_stat(int score,int hpGG,int gold)
+void print_stat(int exp,int hpGG,int gold,int profile_level)
 {
     system("clear");
-    printf("Your score %6.1d\n\n",score);
-    printf("Your health %6.1d\n\n",hpGG);
-    printf("Your gold %6.1d\n\n",gold);
+    printf("Your level %6.1d\n",profile_level);
+    printf("Your experience %6.1d\n",exp);
+    printf("Your health %6.1d\n",hpGG);
+    printf("Your gold %6.1d\n",gold);
 }
 
 
@@ -122,6 +125,17 @@ int EXIT()
 
 
 
+void loot(int *exp,int *gold,int *profile_level)
+{
+    *exp+=15+(rand()%20);
+    *gold+=20+(rand()%10)*(*profile_level);
+    if(*exp>=100)
+    {
+        *exp%=100;
+        *profile_level+=1;
+    }
+}
+
 
 
 
@@ -130,13 +144,19 @@ int play(int level,char *profile_name)
     FILE *map;
     int i,j,x,y;
     int GGxy[2];
-    int GG[3]={100,25,8};
+    int GG[3];
     int exit;
     int **Map;
     char *level_name;
     int temp;
-    int gold=0,score=0
-        ;
+
+
+    int gold=get_intValue(profile_name,"gold");
+    int experience=get_intValue(profile_name,"experience");
+    int profile_level=get_intValue(profile_name,"player_level");
+    GG[0]=get_intValue(profile_name,"hp");
+    GG[1]=get_intValue(profile_name,"attack");
+    GG[2]=get_intValue(profile_name,"defence");
 
     level_name=(char*)malloc(30*sizeof(char));
     Selected(level,level_name);
@@ -160,7 +180,7 @@ int play(int level,char *profile_name)
     fclose(map);
     while(1)
     {
-        print_stat(score,GG[0],gold);
+        print_stat(experience,GG[0],gold,profile_level);
         print_map(Map,i,j,GGxy);
         temp=getch();
         switch(temp)
@@ -188,13 +208,21 @@ int play(int level,char *profile_name)
                         {
                             GGxy[0]--;
                             Map[GGxy[0]][GGxy[1]]=empty;
+                            loot(&experience,&gold,&profile_level);
                         }
                         if(exit==2)
                             return 0;
                         break;//Тут добавить файт
                     case coins:
+                        GGxy[0]--;
+                        Map[GGxy[0]][GGxy[1]]=empty;
+                        loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
+                        //set_Value(profile_name,"attack",);
+                       /* set_Value(profile_name,"experience",experience);
+                        set_Value(profile_name,"player_level",profile_level);
+*/
                         return 1;
                 }
                 break;
@@ -216,13 +244,20 @@ int play(int level,char *profile_name)
                         {
                             GGxy[0]++;
                             Map[GGxy[0]][GGxy[1]]=empty;
+                            loot(&experience,&gold,&profile_level);
                         }
                         if(exit==2)
                             return 0;
                         break;//Тут добавить файт
                     case coins:
+                        GGxy[0]++;
+                        Map[GGxy[0]][GGxy[1]]=empty;
+                        loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
+                       /* set_Value(profile_name,"gold",gold);
+                        set_Value(profile_name,"experience",experience);
+                        set_Value(profile_name,"player_level",profile_level);*/
                         return 1;
                 }
                 break;
@@ -244,13 +279,20 @@ int play(int level,char *profile_name)
                         {
                             GGxy[1]--;
                             Map[GGxy[0]][GGxy[1]]=empty;
+                            loot(&experience,&gold,&profile_level);
                         }
                         if(exit==2)
                             return 0;
                         break;//Тут добавить файт
                     case coins:
+                        GGxy[1]--;
+                        Map[GGxy[0]][GGxy[1]]=empty;
+                        loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
+                        /*set_Value(profile_name,"gold",gold);
+                        set_Value(profile_name,"experience",experience);
+                        set_Value(profile_name,"player_level",profile_level);*/
                         return 1;
                 }
                 break;
@@ -272,13 +314,20 @@ int play(int level,char *profile_name)
                         {
                             GGxy[1]++;
                             Map[GGxy[0]][GGxy[1]]=empty;
+                            loot(&experience,&gold,&profile_level);
                         }
                         if(exit==2)
                             return 0;
                         break;//Тут добавить файт
                     case coins:
+                        GGxy[1]++;
+                        Map[GGxy[0]][GGxy[1]]=empty;
+                        loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
+                       /* set_Value(profile_name,"gold",gold);
+                        set_Value(profile_name,"experience",experience);
+                        set_Value(profile_name,"player_level",profile_level);*/
                         return 1;
                 }
                 break;

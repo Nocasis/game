@@ -7,14 +7,14 @@
 int much_maps()
 {
     int a=0;
-    FILE *file;
+    FILE *file_maps;
     char string[30];
-    file = fopen("catalog.txt", "r"); //Тут менять название файла с картами.
+    file_maps = fopen("catalog.txt", "r"); //Тут менять название файла с картами.
     if(file==NULL)
         return 0;
-    while(fscanf(file,"%s",string)!=EOF)
+    while(fscanf(file_maps,"%s",string)!=EOF)
         a++;
-    fclose(file);
+    fclose(file_maps);
     return a;
 }
 
@@ -23,16 +23,16 @@ int much_maps()
 int Select_map()
 {
     int a=1, mapcount=much_maps(),flag;
-    FILE *file;
+    FILE *file_maps;
     char string[30],temp;
-    file = fopen("catalog.txt", "r");
+    file_maps = fopen("catalog.txt", "r");
     while(1)
     {
-        fseek(file,0,SEEK_SET);
+        fseek(file_maps,0,SEEK_SET);
         system("clear");
         printf("\t\tChoice the map\n");
         flag=1;
-        while(fscanf(file,"%s",string)!=EOF)
+        while(fscanf(file_maps,"%s",string)!=EOF)
         {
             printf("%s",string);
             if(flag==a)
@@ -44,10 +44,10 @@ int Select_map()
         switch (temp)
         {
             case ESC:
-                fclose(file);
+                fclose(file_maps);
                 return a=0;
             case ENTER:
-                fclose(file);
+                fclose(file_maps);
                 return a;
             case W:
                 if((a<=1)||(a>mapcount))
