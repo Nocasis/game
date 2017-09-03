@@ -3,7 +3,7 @@
 #include <stdlib.h> //malloc
 
 
-#define file "profiles.txt"
+#define Pcatalog "profiles.txt"
 
 //controls
 
@@ -17,7 +17,7 @@
 #define TAB 9
 
 const int len=32;
-const int attack=10, defence=5, inventory=5; //default profile parametrs
+const int attack=10, defence=5, inventory=5, hp=100; //default profile parametrs
 
 char *profile_menu(); //call this (it return current profile_name)
 
@@ -26,7 +26,10 @@ char *profile_menu(); //call this (it return current profile_name)
 
 int get_intValue(char *profileName, char *valueName);
 char *get_stringValue(char *profileName, char *valueName);
+
 void get_inventory(char *profileName, int *inventory);
+void set_inventory(char *profileName, int *inventory);
+
 void set_Value(char *profileName, char *valueName, char *value);
 
 
@@ -42,7 +45,7 @@ char *profile_menu()
 {    
     int count=much_profiles()+1;
     
-    FILE *profile = fopen(file,"r");
+    FILE *profile = fopen(Pcatalog,"r");
     if(profile==NULL)
     {
         printf("There are no profiles \n Create new\n");
@@ -198,6 +201,12 @@ char *new_profile()
             fprintf(new_profile,"current_armor -1\n");
             fprintf(new_profile,"current_weapon -1\n");
             
+            fprintf(new_profile,"experience 0\n");
+            fprintf(new_profile,"gold 0\n");
+            fprintf(new_profile,"hp %d\n",hp);
+            
+            
+            
             fclose(new_profile);
             return name;
                                  
@@ -215,12 +224,12 @@ char *new_profile()
 int check_profile(char *profile)
 {
 
-    FILE *catalog = fopen(file,"r");
+    FILE *catalog = fopen(Pcatalog,"r");
     char getName[64];
 
     if(catalog==NULL) //if there is no file
     {
-        freopen(file,"w",catalog);  //create it
+        freopen(Pcatalog,"w",catalog);  //create it
         return 1;                   //return 1 because the catalog is empty
     }
 
@@ -241,7 +250,7 @@ int check_profile(char *profile)
 //add profile in catalog
 void add_profile(char *profile)
 {
-    FILE *catalog = fopen(file,"a");
+    FILE *catalog = fopen(Pcatalog,"a");
     fprintf(catalog,"%s \n",profile);
     fclose(catalog);
 }
@@ -251,7 +260,7 @@ int much_profiles()
     int count=0;
     FILE *catalog;
     char string[30];
-    catalog = fopen(file, "r");
+    catalog = fopen(Pcatalog, "r");
     
     if(catalog==NULL)
     return 0; //there are no profiles
@@ -282,11 +291,15 @@ int get_intValue(char *profileName, char *valueName)
         fscanf(config,"%s", currentValueName);
         fscanf(config,"%d", &result);
         if(strcmp(currentValueName,valueName)==0)
-        return result;                    
+        {
+            fclose(config);
+            return result;
+        }                    
     }
     
     printf("incorect valueName\n");
     getch();
+    fclose(config);
     return 0;
     
 }
@@ -304,9 +317,12 @@ char *get_stringValue(char *profileName, char *valueName)
         fscanf(config,"%s", currentValueName);
         fscanf(config,"%s", result);
         if(strcmp(currentValueName,valueName)==0)
-        return result;                    
+        {
+            fclose(config);
+            return result;
+        }                    
     }
-    
+    fclose(config);
     return "\0"; //incorect valueName        
 }
 
@@ -334,7 +350,7 @@ void get_inventory(char *profileName, int *inventory)
             return;            
         }
     }
-        
+    fclose(config);    
 }
 
 void set_Value(char *profileName, char *valueName, char *value)
@@ -356,7 +372,7 @@ void set_Value(char *profileName, char *valueName, char *value)
         fprintf(temp,"password %s\n",string);
     }
     
-    for(int i=0; i<8; i++)
+    for(int i=0; i<11; i++)
     {
         fscanf(prim,"%s", string);
         fscanf(prim,"%d", &itemp);
@@ -381,14 +397,11 @@ void set_Value(char *profileName, char *valueName, char *value)
     freopen(profileName,"w",prim);
     freopen("system_temp.txt","r",temp);
     
-    fseek(temp,SEEK_SET,0);
-    
-    
     fscanf(temp,"%s", string);//"password"
     fscanf(temp,"%s", string);//value
     fprintf(prim,"password %s\n",string);
     
-    for(int i=0; i<8; i++)
+    for(int i=0; i<11; i++)
     {
         fscanf(temp,"%s", string);
         fscanf(temp,"%d", &itemp);
@@ -407,9 +420,69 @@ void set_Value(char *profileName, char *valueName, char *value)
         }
         
     }
-    
+    free(string);
     fclose(prim);
     fclose(temp);
     
+}
+
+void set_inventory(char *profileName, int *inventory)
+{
+    FILE *prim =fopen(profileName,"r");
+    FILE *temp =fopen("system_temp.txt","w");
+    char *string = (char*)malloc(len*sizeof(char));
+    int itemp;
+    
+    fscanf(prim,"%s", string);//"password"
+    fscanf(prim,"%s", string);//value
+    fprintf(temp,"password %s\n",string);
+    
+    for(int i=0; i<11; i++)
+    {
+        fscanf(prim,"%s", string);
+        fscanf(prim,"%d", &itemp);
+        fprintf(temp,"%s %d\n",string,itemp);
+        
+        if(strcmp(string,"inventory")==0)
+        {
+            for(int j=0; j<itemp; j++)
+            {
+                int mas;
+                fscanf(prim, "%d",&mas);
+                fprintf(temp,"%d ",inventory[j]);
+            }
+            
+            fprintf(temp,"\n");
+        }
+    }
+    freopen(profileName,"w",prim);
+    freopen("system_temp.txt","r",temp);    
+    
+    fscanf(temp,"%s", string);//"password"
+    fscanf(temp,"%s", string);//value
+    fprintf(prim,"password %s\n",string);
+    
+    for(int i=0; i<11; i++)
+    {
+        fscanf(temp,"%s", string);
+        fscanf(temp,"%d", &itemp);
+        
+        fprintf(prim,"%s %d\n",string,itemp);
+        
+        if(strcmp(string,"inventory")==0)
+        {
+            for(int j=0; j<itemp; j++)
+            {
+                int mas;
+                fscanf(temp,"%d", &mas);
+                fprintf(prim,"%d ",mas);
+            }
+            fprintf(prim,"\n");
+        }
+        
+    }
+    free(string);
+    fclose(prim);
+    fclose(temp);
 }
 
