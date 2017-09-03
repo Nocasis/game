@@ -125,13 +125,12 @@ int EXIT()
 
 
 
-int play(int level)
+int play(int level,char *profile_name)
 {
     FILE *map;
     int i,j,x,y;
     int GGxy[2];
     int GG[3]={100,25,8};
-    char profile_name[32]="Nocasis";
     int exit;
     int **Map;
     char *level_name;
