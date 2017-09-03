@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> //malloc
+//#include <conio.h> //getch()
 
 #define file "profiles.txt"
 
@@ -23,11 +24,18 @@ char *profile_menu(); //call this (it return current profile_name)
 //char *name=(char *)malloc(32*sizeof(char));
 //name=profile_menu();
 
+int get_intValue(char *profileName, char *valueName);
+char *get_stringValue(char *profileName, char *valueName);
+void get_inventory(char *profileName, int *inventory);
+void set_Value(char *profileName, char *valueName, char *value);
 
-int check_profile(char *profile);   //Check profile availabiliy
-void add_profile(char *profile);    //Add profile to directory
-int much_profiles();                //Profiles count
-char *new_profile();                 //Create new profile (it return created profile_name)
+
+int check_profile(char *profile);   //проверить есть ли такой профиль
+void add_profile(char *profile);    //добавить профиль в каталог
+int much_profiles();                //количество профилей в каталоге
+int getValue(char *name, char* filename);
+
+char *new_profile();                 //создание новго профиля
 
 
 
@@ -60,7 +68,7 @@ char *profile_menu()
     
     char button;
     int current=0;
-    /////////////////////////////////
+    
     while(1)
     {
         system("cls");
@@ -88,7 +96,7 @@ char *profile_menu()
                 else
                 current++;
                 break;
-            case(ENTER): //не забыть освободить память!
+            case(ENTER): 
                 if(current==0)
                 {
                     for(i=0; i<count; i++)
@@ -115,7 +123,7 @@ char *profile_menu()
                     break;                    
                 }
 ////////////////////////////////////////////////////////////////////                
-                while(1)//it needs to refactoring
+                while(1)
                 {
                     char password[len];
                     system("cls");
@@ -231,6 +239,7 @@ int check_profile(char *profile)
     return 1;        
 }
 
+//add profile in catalog
 void add_profile(char *profile)
 {
     FILE *catalog = fopen(file,"a");
@@ -252,5 +261,156 @@ int much_profiles()
         count++;
     fclose(catalog);
     return count;
+}
+
+
+int get_intValue(char *profileName, char *valueName)
+{
+    int result;
+    char *currentValueName = (char *)malloc(len*sizeof(char));
+    FILE *config =fopen(profileName,"r");
+    if (config==NULL)
+    {
+        //system("clear");
+        system("cls");
+        printf("incorect profileName\n");
+        getch();
+        return 0;//incorect profileName
+    }
+    
+    while (!feof(config))
+    {
+        fscanf(config,"%s", currentValueName);
+        fscanf(config,"%d", &result);
+        if(strcmp(currentValueName,valueName)==0)
+        return result;                    
+    }
+    
+    printf("incorect valueName\n");
+    getch();
+    return 0;
+    
+}
+
+char *get_stringValue(char *profileName, char *valueName)
+{
+    char *result = (char *)malloc(len*sizeof(char));
+    char *currentValueName = (char *)malloc(len*sizeof(char));
+    FILE *config =fopen(profileName,"r");
+    if (config==NULL)
+    return "\0";//incorect profileName
+    
+    while (!feof(config))
+    {
+        fscanf(config,"%s", currentValueName);
+        fscanf(config,"%s", result);
+        if(strcmp(currentValueName,valueName)==0)
+        return result;                    
+    }
+    
+    return "\0"; //incorect valueName        
+}
+
+void get_inventory(char *profileName, int *inventory)
+{
+    int size;
+    char *currentValueName = (char *)malloc(len*sizeof(char));
+    FILE *config =fopen(profileName,"r");
+    if (config==NULL)
+    {
+        //system("clear");
+        system("cls");
+        printf("incorect profileName\n");
+        getch();
+        return;//incorect profileName
+    }
+    while (!feof(config))
+    {
+        fscanf(config,"%s", currentValueName);
+        if(strcmp(currentValueName,"inventory")==0)
+        {
+            fscanf(config,"%d", size);
+            for(int i=0; i<size; i++)
+            fscanf(config,"%d", &inventory[i]);
+            return;            
+        }
+    }
+        
+}
+
+void set_Value(char *profileName, char *valueName, char *value)
+{
+    FILE *prim =fopen(profileName,"r");
+    FILE *temp =fopen("system_temp.txt","w");
+    char *string = (char*)malloc(len*sizeof(char));
+    int itemp;
+    
+    fscanf(prim,"%s", string);//"password"
+    if(strcmp(string,valueName)==0)
+    {
+        fprintf(temp,"password %s\n",value);//print new value
+        fscanf(prim,"%s", string);//old-value
+    }
+    else
+    {    
+        fscanf(prim,"%s", string);//value
+        fprintf(temp,"password %s\n",string);
+    }
+    
+    for(int i=0; i<8; i++)
+    {
+        fscanf(prim,"%s", string);
+        fscanf(prim,"%d", &itemp);
+        
+        if(strcmp(string,valueName)==0)
+        fprintf(temp,"%s %d\n",string,value);
+        else
+        fprintf(temp,"%s %d\n",string,itemp);
+        
+        if(strcmp(string,"inventory")==0)
+        {
+            for(int j=0; j<itemp; j++)
+            {
+                int mas;
+                fscanf(prim,"%d", &mas);
+                fprintf(temp,"%d ",mas);
+            }
+            fprintf(temp,"\n");
+        }
+        
+    }
+    freopen(profileName,"w",prim);
+    freopen("system_temp.txt","r",temp);
+    
+    fseek(temp,SEEK_SET,0);
+    
+    
+    fscanf(temp,"%s", string);//"password"
+    fscanf(temp,"%s", string);//value
+    fprintf(prim,"password %s\n",string);
+    
+    for(int i=0; i<8; i++)
+    {
+        fscanf(temp,"%s", string);
+        fscanf(temp,"%d", &itemp);
+        
+        fprintf(prim,"%s %d\n",string,itemp);
+        
+        if(strcmp(string,"inventory")==0)
+        {
+            for(int j=0; j<itemp; j++)
+            {
+                int mas;
+                fscanf(temp,"%d", &mas);
+                fprintf(prim,"%d ",mas);
+            }
+            fprintf(prim,"\n");
+        }
+        
+    }
+    
+    fclose(prim);
+    fclose(temp);
+    
 }
 
