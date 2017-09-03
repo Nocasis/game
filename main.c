@@ -28,9 +28,10 @@ int getch( )
 }
 #include "Generator.c"
 #include "main_menu.c"
-
 int main()
 {
-    menu();
+    char *profile_name=(char *)malloc(32*sizeof(char));
+    profile_name=profile_menu();
+    menu(profile_name);
     return 1;
 }

@@ -94,10 +94,10 @@ void random_enemy(int profile_level,int NPC[3],char name_npc[32])
             return;
     }
 }
-void print_window(int a,int GG[3],int NPC[3],char *profile_name,char name_npc[32]) // Here we should add some things from profiles
+void print_window(int a,int GG[3],int NPC[3],char name_npc[32]) // Here we should add some things from profiles
 {
     printf("\t\t   ***Fight***\n");
-    printf("\n\t %s \t\t%s\n",profile_name,name_npc);
+    printf("\n\t You \t\t%s\n",name_npc);
     printf("%c",124);
     for(int i=0;i<23; i++)
         printf("%c",61);
@@ -151,7 +151,7 @@ int fight_menu(int a,int GG[3],int NPC[3],char *profile_name,char name_npc[32])
     while(1)
     {
         system("clear");
-        print_window(a,GG,NPC,profile_name,name_npc);
+        print_window(a,GG,NPC,name_npc);
         temp=getch();
         switch (temp)
         {
