@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> //malloc
-//#include <conio.h> //getch()
+
 
 #define file "profiles.txt"
 
@@ -30,12 +30,11 @@ void get_inventory(char *profileName, int *inventory);
 void set_Value(char *profileName, char *valueName, char *value);
 
 
-int check_profile(char *profile);   //проверить есть ли такой профиль
-void add_profile(char *profile);    //добавить профиль в каталог
-int much_profiles();                //количество профилей в каталоге
-int getValue(char *name, char* filename);
+int check_profile(char *profile);   //Check profile availabiliy
+void add_profile(char *profile);    //Add profile to directory
+int much_profiles();                //Profiles count
 
-char *new_profile();                 //создание новго профиля
+char *new_profile();                 //Create new profile (it return created profile_name)
 
 
 
