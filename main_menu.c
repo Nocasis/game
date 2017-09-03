@@ -126,9 +126,10 @@ int menu_select(int a)
 }
 
 
-void menu()  //Call this
+void menu(char *profile_name)  //Call this
 {
     int Select=0,level=1;
+    int what_exit;
     while(1)
     {
         Select=menu_select(Select);
@@ -136,14 +137,16 @@ void menu()  //Call this
         {
             case 0:
                 system("clear");
-                int what_exit=play(level);
+                what_exit=play(level,profile_name);
                 printf("%d",what_exit);
                 getch();
                 break;
             case 1:
                 system("clear");
                 level=Select_map();
-                play(level);
+                what_exit=play(level,profile_name);
+                printf("%d",what_exit);
+                getch();
                 break;
             case 2:
                 system("clear");

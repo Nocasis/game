@@ -69,8 +69,32 @@
 }*/
 
 
-
-void print_window(int a,int GG[3],int NPC[3],char profile_name[32],char name_npc[32]) // Here we should add some things from profiles
+void random_enemy(int profile_level,int NPC[3],char name_npc[32])
+{
+    int k=rand()%3;
+    switch(k)
+    {
+        case 0:
+            strcpy(name_npc,"Zloy Golub'");
+            NPC[0]=45+0.5*(rand()%10)*profile_level;
+            NPC[1]=20+0.5*(rand()%8)*profile_level;
+            NPC[2]=5+0.5*(rand()%6)*profile_level;
+            return;
+        case 1:
+            strcpy(name_npc,"Zombie-Navalny");
+            NPC[0]=100+0.5*(rand()%30)*profile_level;
+            NPC[1]=10+0.5*(rand()%3)*profile_level;
+            NPC[2]=5+0.5*(rand()%6)*profile_level;
+            return;
+        case 2:
+            strcpy(name_npc,"Ghost");
+            NPC[0]=45+0.5*(rand()%20)*profile_level;
+            NPC[1]=15+0.5*(rand()%4)*profile_level;
+            NPC[2]=15+0.5*(rand()%6)*profile_level;
+            return;
+    }
+}
+void print_window(int a,int GG[3],int NPC[3],char *profile_name,char name_npc[32]) // Here we should add some things from profiles
 {
     printf("\t\t   ***Fight***\n");
     printf("\n\t %s \t\t%s\n",profile_name,name_npc);
@@ -118,26 +142,9 @@ void print_window(int a,int GG[3],int NPC[3],char profile_name[32],char name_npc
 
 
 
-/*void fight_menu_list(int a)
-{
-    switch(a)
-            {
-                case 0:
-                    printf("1.Hit<<<\n2.Hard blow\n3.Careful blow");
-                    break;
-                case 1:
-                    printf("1.Hit\n2.Hard blow<<<\n3.Careful blow");
-                    break;
-                case 2:
-                    print("1.Hit\n2.Hard blow\n3.Careful<<<");
-                    break;
-            }
-}*/
 
 
-
-
-int fight_menu(int a,int GG[3],int NPC[3],char profile_name[32],char name_npc[32])
+int fight_menu(int a,int GG[3],int NPC[3],char *profile_name,char name_npc[32])
 {
     char temp;
     int menucount=4;
@@ -249,14 +256,12 @@ void Careful_blow(int GG[3],int NPC[3])
 
 
 
-int fight(int GG[3],char profile_name[32])  //Call this
+int fight(int GG[3],char *profile_name)  //Call this
 {
     int what_hit=0;
-    char name_npc[32]="Zloy Golub";
-    //int GG[3]={100,25,8};hp,attack,defence
+    char name_npc[32];
     int NPC[3]={60,20,5};
-*/ 
-    //Тут должна быть функция выбора рандомного врага
+    random_enemy(1,NPC,name_npc);
     while(1)
     {
         what_hit=fight_menu(what_hit,GG,NPC,profile_name,name_npc);
