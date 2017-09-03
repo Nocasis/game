@@ -31,6 +31,7 @@ void get_inventory(char *profileName, int *inventory);
 void set_inventory(char *profileName, int *inventory);
 
 void set_Value(char *profileName, char *valueName, char *value);
+void set_intValue(char *profileName, char *valueName, int value);
 
 
 int check_profile(char *profile);   //Check profile availabiliy
@@ -371,6 +372,71 @@ void set_Value(char *profileName, char *valueName, char *value)
         fscanf(prim,"%s", string);//value
         fprintf(temp,"password %s\n",string);
     }
+    
+    for(int i=0; i<11; i++)
+    {
+        fscanf(prim,"%s", string);
+        fscanf(prim,"%d", &itemp);
+        
+        if(strcmp(string,valueName)==0)
+        fprintf(temp,"%s %d\n",string,value);
+        else
+        fprintf(temp,"%s %d\n",string,itemp);
+        
+        if(strcmp(string,"inventory")==0)
+        {
+            for(int j=0; j<itemp; j++)
+            {
+                int mas;
+                fscanf(prim,"%d", &mas);
+                fprintf(temp,"%d ",mas);
+            }
+            fprintf(temp,"\n");
+        }
+        
+    }
+    freopen(profileName,"w",prim);
+    freopen("system_temp.txt","r",temp);
+    
+    fscanf(temp,"%s", string);//"password"
+    fscanf(temp,"%s", string);//value
+    fprintf(prim,"password %s\n",string);
+    
+    for(int i=0; i<11; i++)
+    {
+        fscanf(temp,"%s", string);
+        fscanf(temp,"%d", &itemp);
+        
+        fprintf(prim,"%s %d\n",string,itemp);
+        
+        if(strcmp(string,"inventory")==0)
+        {
+            for(int j=0; j<itemp; j++)
+            {
+                int mas;
+                fscanf(temp,"%d", &mas);
+                fprintf(prim,"%d ",mas);
+            }
+            fprintf(prim,"\n");
+        }
+        
+    }
+    free(string);
+    fclose(prim);
+    fclose(temp);
+    
+}
+
+void set_intValue(char *profileName, char *valueName, int value)
+{
+    FILE *prim =fopen(profileName,"r");
+    FILE *temp =fopen("system_temp.txt","w");
+    char *string = (char*)malloc(len*sizeof(char));
+    int itemp;
+    
+    fscanf(prim,"%s", string);//"password"
+    fscanf(prim,"%s", string);//value
+    fprintf(temp,"password %s\n",string);
     
     for(int i=0; i<11; i++)
     {
