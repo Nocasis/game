@@ -13,7 +13,7 @@
 #define S 115
 #define D 100
 #define SPACE 32
-#define ENTER 13
+#define ENTER 10
 #define TAB 9
 
 const int len=32;
@@ -49,7 +49,7 @@ char *profile_menu()
     FILE *profile = fopen(Pcatalog,"r");
     if(profile==NULL)
     {
-        printf("There are no profiles \n Create new\n");
+        printf("There are no profiles \nCreate new\n");
         getch();
         return new_profile();
     }
@@ -74,7 +74,8 @@ char *profile_menu()
     
     while(1)
     {
-        system("cls");
+        //system("cls");
+        system("clear");
         for(i=0;i<count;i++)
         {
             printf("%d. %s ",i,names[i]);
@@ -102,8 +103,8 @@ char *profile_menu()
             case(ENTER): 
                 if(current==0)
                 {
-                    for(i=0; i<count; i++)
-                    free(names[i]);
+                    for(i=1; i<count; i++)
+                        free(names[i]);
                     free(names);
                     return new_profile();
                 }
@@ -129,7 +130,8 @@ char *profile_menu()
                 while(1)
                 {
                     char password[len];
-                    system("cls");
+                    //system("cls");
+                    system("clear");
                     printf("Enter password: ");
                     fgets(password,len,stdin);
                     for(i=0;i<len;i++)
@@ -158,11 +160,12 @@ char *new_profile()
     //char name[len], format[5]=".txt";
     char *name=(char *)malloc(len*sizeof(char));
     char format[5]=".txt";
-    
+    char name1 [32];
     int i;
     while(1)
     {
-        system("cls");
+        //system("cls");
+        system("clear");
         printf("Enter your profile name: ");
         fgets(name,len-5,stdin);
         for(i=0;i<len;i++)
@@ -174,7 +177,8 @@ char *new_profile()
         if(check_profile(name))
         {
             char password[len];
-            system("cls");
+            //system("cls");
+            system("clear");
             printf("Enter your password: ");
             fgets(password,len,stdin);
             for(i=0;i<len;i++)
@@ -214,7 +218,8 @@ char *new_profile()
         }
         else
         {
-            system("cls");
+            //system("cls");
+            system("clear");
             printf("Incorrect name\n");
             getch();
         }
@@ -227,10 +232,9 @@ int check_profile(char *profile)
 
     FILE *catalog = fopen(Pcatalog,"r");
     char getName[64];
-
     if(catalog==NULL) //if there is no file
     {
-        freopen(Pcatalog,"w",catalog);  //create it
+        fopen(Pcatalog,"w");  //create it
         return 1;                   //return 1 because the catalog is empty
     }
 
@@ -280,8 +284,8 @@ int get_intValue(char *profileName, char *valueName)
     FILE *config =fopen(profileName,"r");
     if (config==NULL)
     {
-        //system("clear");
-        system("cls");
+        system("clear");
+        //system("cls");
         printf("incorect profileName\n");
         getch();
         return 0;//incorect profileName
@@ -334,8 +338,8 @@ void get_inventory(char *profileName, int *inventory)
     FILE *config =fopen(profileName,"r");
     if (config==NULL)
     {
-        //system("clear");
-        system("cls");
+        system("clear");
+        //system("cls");
         printf("incorect profileName\n");
         getch();
         return;//incorect profileName

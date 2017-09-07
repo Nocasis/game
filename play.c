@@ -219,10 +219,10 @@ int play(int level,char *profile_name)
                         loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
-                        //set_Value(profile_name,"attack",);
-                       /* set_Value(profile_name,"experience",experience);
-                        set_Value(profile_name,"player_level",profile_level);
-*/
+                        set_intValue(profile_name,"gold",gold);
+                       set_intValue(profile_name,"experience",experience);
+                        set_intValue(profile_name,"player_level",profile_level);
+
                         return 1;
                 }
                 break;
@@ -255,9 +255,9 @@ int play(int level,char *profile_name)
                         loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
-                       /* set_Value(profile_name,"gold",gold);
-                        set_Value(profile_name,"experience",experience);
-                        set_Value(profile_name,"player_level",profile_level);*/
+                        set_intValue(profile_name,"gold",gold);
+                        set_intValue(profile_name,"experience",experience);
+                        set_intValue(profile_name,"player_level",profile_level);
                         return 1;
                 }
                 break;
@@ -290,9 +290,9 @@ int play(int level,char *profile_name)
                         loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
-                        /*set_Value(profile_name,"gold",gold);
-                        set_Value(profile_name,"experience",experience);
-                        set_Value(profile_name,"player_level",profile_level);*/
+                        set_intValue(profile_name,"gold",gold);
+                        set_intValue(profile_name,"experience",experience);
+                        set_intValue(profile_name,"player_level",profile_level);
                         return 1;
                 }
                 break;
@@ -325,9 +325,9 @@ int play(int level,char *profile_name)
                         loot(&experience,&gold,&profile_level);
                         break;//Тут добавить лут чего-либо
                     case finish:
-                       /* set_Value(profile_name,"gold",gold);
-                        set_Value(profile_name,"experience",experience);
-                        set_Value(profile_name,"player_level",profile_level);*/
+                        set_intValue(profile_name,"gold",gold);
+                        set_intValue(profile_name,"experience",experience);
+                        set_intValue(profile_name,"player_level",profile_level);
                         return 1;
                 }
                 break;
