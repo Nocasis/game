@@ -136,7 +136,10 @@ void loot(int *exp,int *gold,int *profile_level)
     }
 }
 
+/*void level_up(int GG[3],int *skill_points)
+{
 
+}*/
 
 
 int play(int level,char *profile_name)
@@ -154,9 +157,12 @@ int play(int level,char *profile_name)
     int gold=get_intValue(profile_name,"gold");
     int experience=get_intValue(profile_name,"experience");
     int profile_level=get_intValue(profile_name,"player_level");
+    int skill_points=get_intValue(profile_name,"skill_points");
+    int map_level=get_intValue(profile_name,"skill_points");
     GG[0]=get_intValue(profile_name,"hp");
     GG[1]=get_intValue(profile_name,"attack");
     GG[2]=get_intValue(profile_name,"defence");
+
 
     level_name=(char*)malloc(30*sizeof(char));
     Selected(level,level_name);
@@ -178,6 +184,8 @@ int play(int level,char *profile_name)
             }
         }
     fclose(map);
+
+
     while(1)
     {
         print_stat(experience,GG[0],gold,profile_level);
@@ -203,7 +211,7 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name);
+                        exit=fight(GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[0]--;
@@ -216,13 +224,15 @@ int play(int level,char *profile_name)
                     case coins:
                         GGxy[0]--;
                         Map[GGxy[0]][GGxy[1]]=empty;
-                        loot(&experience,&gold,&profile_level);
+                        loot(&experience,&gold,&profile_level);//Here i should add skill_points
                         break;//Тут добавить лут чего-либо
                     case finish:
                         set_intValue(profile_name,"gold",gold);
-                       set_intValue(profile_name,"experience",experience);
+                        set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
-
+                        set_intValue(profile_name,"skill_points",skill_points);
+                        map_level+=1;
+                        set_intValue(profile_name,"map_level",map_level);
                         return 1;
                 }
                 break;
@@ -239,7 +249,7 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name);
+                        exit=fight(GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[0]++;
@@ -258,6 +268,9 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"gold",gold);
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
+                        set_intValue(profile_name,"skill_points",skill_points);
+                        map_level+=1;
+                        set_intValue(profile_name,"map_level",map_level);
                         return 1;
                 }
                 break;
@@ -274,7 +287,7 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name);
+                        exit=fight(GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[1]--;
@@ -293,6 +306,9 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"gold",gold);
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
+                        set_intValue(profile_name,"skill_points",skill_points);
+                        map_level+=1;
+                        set_intValue(profile_name,"map_level",map_level);
                         return 1;
                 }
                 break;
@@ -309,7 +325,7 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name);
+                        exit=fight(GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[1]++;
@@ -328,6 +344,9 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"gold",gold);
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
+                        set_intValue(profile_name,"skill_points",skill_points);
+                        map_level+=1;
+                        set_intValue(profile_name,"map_level",map_level);
                         return 1;
                 }
                 break;
