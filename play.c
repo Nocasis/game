@@ -158,7 +158,7 @@ int play(int level,char *profile_name)
     int experience=get_intValue(profile_name,"experience");
     int profile_level=get_intValue(profile_name,"player_level");
     int skill_points=get_intValue(profile_name,"skill_points");
-    int map_level=get_intValue(profile_name,"skill_points");
+    int map_level=get_intValue(profile_name,"map_level");
     GG[0]=get_intValue(profile_name,"hp");
     GG[1]=get_intValue(profile_name,"attack");
     GG[2]=get_intValue(profile_name,"defence");
@@ -231,8 +231,7 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
-                        map_level+=1;
-                        set_intValue(profile_name,"map_level",map_level);
+                        set_intValue(profile_name,"map_level",map_level+1);
                         return 1;
                 }
                 break;
@@ -269,8 +268,7 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
-                        map_level+=1;
-                        set_intValue(profile_name,"map_level",map_level);
+                        set_intValue(profile_name,"map_level",map_level+1);
                         return 1;
                 }
                 break;
@@ -307,8 +305,7 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
-                        map_level+=1;
-                        set_intValue(profile_name,"map_level",map_level);
+                        set_intValue(profile_name,"map_level",map_level+1);
                         return 1;
                 }
                 break;
@@ -345,8 +342,7 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
-                        map_level+=1;
-                        set_intValue(profile_name,"map_level",map_level);
+                        set_intValue(profile_name,"map_level",map_level+1);
                         return 1;
                 }
                 break;

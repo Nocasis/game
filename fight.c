@@ -283,13 +283,13 @@ int skills(int a,int GG[3],int NPC[3],char name_npc[32],int *skill_points)
 
 int fight(int GG[3],char *profile_name,int profile_level,int *skill_points)//Call this
 {
-    int what_hit=0;
+    int what_hit=0,what_skill=0;
     char name_npc[32];
     int NPC[3];
     random_enemy(profile_level,NPC,name_npc);
     while(1)
     {
-        what_hit=fight_menu(0,GG,NPC,profile_name,name_npc);
+        what_hit=fight_menu(what_hit,GG,NPC,profile_name,name_npc);
         switch (what_hit)
         {
             case 0:
@@ -302,13 +302,13 @@ int fight(int GG[3],char *profile_name,int profile_level,int *skill_points)//Cal
                 Careful_blow(GG,NPC);
                 break;
             case 3:
-                what_hit=skills(0,GG,NPC,name_npc,skill_points);
-                if(what_hit==-1)
+                what_skill=skills(what_skill,GG,NPC,name_npc,skill_points);
+                if(what_skill==-1)
                 {
                     printf("\nYou are closed the book.\n");
                     break;
                 }
-                switch(what_hit)
+                switch(what_skill)
                 {
                     case 0:
                         Hit(GG,NPC);

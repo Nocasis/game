@@ -21,12 +21,13 @@ int much_maps()
 
 
 
-int Select_map(int *map_level)
+int Select_map(char *profile_name)
 {
     int a=1, mapcount=much_maps(),flag;
     FILE *file_maps;
     char string[30],temp;
     file_maps = fopen("catalog.txt", "r");
+    int map_level=get_intValue(profile_name,"map_level");
     while(1)
     {
         fseek(file_maps,0,SEEK_SET);
@@ -49,7 +50,7 @@ int Select_map(int *map_level)
                 return 0;
             case ENTER:
                 fclose(file_maps);
-                if(a>*map_level)
+                if(a>map_level)
                 {
                     printf("You cant play this map");
                     getch();
@@ -134,7 +135,6 @@ void menu(char *profile_name)  //Call this
 {
     int Select=0,level=1;
     int what_exit;
-    int map_level=get_intValue(profile_name,"map_level");
     while(1)
     {
         Select=menu_select(Select);
@@ -146,7 +146,7 @@ void menu(char *profile_name)  //Call this
                 break;
             case 1:
                 system("clear");
-                level=Select_map(&map_level);
+                level=Select_map(profile_name);
                 if(level==0)
                     break;
                 what_exit=play(level,profile_name);
