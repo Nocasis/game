@@ -29,6 +29,7 @@ char *get_stringValue(char *profileName, char *valueName);
 
 void get_inventory(char *profileName, int *inventory);
 void set_inventory(char *profileName, int *inventory);
+int epmty_slot(int *inventory, int size); //return nearest empty slot
 
 void set_Value(char *profileName, char *valueName, char *value);
 void set_intValue(char *profileName, char *valueName, int value);
@@ -57,7 +58,7 @@ char *profile_menu()
     int i;
     char **names;                             
     names=(char **)malloc(count*sizeof(char *));
-    for(i=1;i<count;i++)
+    for(i=0;i<count;i++)
     names[i]=(char *)malloc(len*sizeof(char));
     
     char *result=(char *)malloc(len*sizeof(char));
@@ -164,12 +165,13 @@ char *new_profile()
     {
         system("cls");
         printf("Enter your profile name: ");
-        fgets(name,len-5,stdin);
+        fgets(name,len-15,stdin);
         for(i=0;i<len;i++)
         {
             if(name[i]=='\0')
             name[i-1]='\0';
         }
+        
         strcat(name,format);
         if(check_profile(name))
         {
@@ -550,5 +552,15 @@ void set_inventory(char *profileName, int *inventory)
     free(string);
     fclose(prim);
     fclose(temp);
+}
+
+int epmty_slot(int *inventory, int size)
+{
+    for(int i=0; i<size; i++)
+    {
+        if(inventory[i]==0)
+        return i;
+    }
+    return -1;
 }
 
