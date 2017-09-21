@@ -198,7 +198,7 @@ char *new_profile()
             
             fprintf(new_profile,"inventory %d\n",inventory);
             for(i=0; i<inventory; i++)
-            fprintf(new_profile,"0 ");
+            fprintf(new_profile,"-1 ");
             fprintf(new_profile,"\n");
             
             fprintf(new_profile,"current_armor -1\n");
@@ -558,7 +558,7 @@ int epmty_slot(int *inventory, int size)
 {
     for(int i=0; i<size; i++)
     {
-        if(inventory[i]==0)
+        if(inventory[i]==-1)
         return i;
     }
     return -1;
