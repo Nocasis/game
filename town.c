@@ -8,7 +8,7 @@
 #define S 115
 #define D 100
 #define SPACE 32
-#define ENTER 13
+#define ENTER 10
 #define TAB 9
 
 const int min_potions = 0;
@@ -52,8 +52,8 @@ void sell(char *profileName)
     int pos=0;
     while(1)
     {
-        system("cls");
-        //system("clear");
+        //system("cls");
+        system("clear");
         printf("Press ECS to exit\n");
         printf("Well, let's see what you offer me\n");
         printf("YOUR GOLD: %d\n",gold);
@@ -84,7 +84,6 @@ void sell(char *profileName)
                 pos++;
                 break;
             case ENTER:
-                //при продаже проверять был ли предмет экипирован??  (функция?)
                 if(inventory[pos]!=-1)
                 {
                     gold+=cost[pos];
@@ -95,11 +94,10 @@ void sell(char *profileName)
                 }
                 break;
             case ESC:
-                set_intValue(profileName,"gold",gold);
                 set_inventory(profileName,inventory);
-                
+                set_intValue(profileName,"gold",gold);
                 for(int i=0; i<size; i++)
-                free(item_name[i]);
+                    free(item_name[i]);
                 
                 free(item_name);
                 free(inventory);
@@ -120,20 +118,21 @@ void get_item_info(int* inventory, char** item_name, int* power, int* cost, int 
     FILE *items=fopen("items.txt","r");
     if(items==NULL)
     {
-        system("cls");
-        //system("clear");
+        //system("cls");
+        system("clear");
         printf("items.txt not found");
         getch();
         return;
     }
-    
+
     while(!feof(items))
     {
+        //printf("\n\nss\n\n");
         fscanf(items,"%d %s",&tid, tname);  
         if(strcmp(tname,"NULL")!=0)
-        fscanf(items,"%d %d",&tpower, &tcost);
+            fscanf(items,"%d %d",&tpower, &tcost);
         else
-        continue;
+            continue;
         
         for(int i=0; i<size; i++)
         {
@@ -145,7 +144,7 @@ void get_item_info(int* inventory, char** item_name, int* power, int* cost, int 
             }
         }      
     }
-    
+    //printf("\n\nss\n\n");
     for(int i=0; i<size; i++)
     {
         if(inventory[i]==-1)
@@ -190,12 +189,9 @@ int town_menu()
     char button;
     while(1)
     {
-        system("cls");
-        //system("clear");
+        //system("cls");
+        system("clear");
         printf("Welcome to the Huibelburg!\n");
-        printf("Message1\n");
-        printf("Message2\n");
-        printf("Message3\n");
         
         switch(select)
         {
@@ -244,8 +240,8 @@ void shop(char *profileName)
     char button;
     while(1)
     {
-        system("cls");
-        //system("clear");
+        //system("cls");
+        system("clear");
         printf("We are glad to see you in the store Dirty Billy\n");
         printf("Here are sold the most rare potions from around the city\n");
         printf("Here you can buy excellent armor\n");
@@ -255,19 +251,19 @@ void shop(char *profileName)
         switch(select)
         {
             case(0):
-                printf("\n 1. SELL<<<\n 2. BUY POTIONS\n 3. BUY ARMORS\n 4. BUY WEAPONS\n 5. EXIT\n");
+                printf("\n 1. Sell<<<\n 2. Buy potions\n 3. Buy armors\n 4. Buy weapons\n 5. Exit\n");
                 break;
             case(1):
-                printf("\n 1. SELL\n 2. BUY POTIONS<<<\n 3. BUY ARMORS\n 4. BUY WEAPONS\n 5. EXIT\n");
+                printf("\n 1. Sell\n 2. Buy potions<<<\n 3. Buy armors\n 4. Buy weapons\n 5. Exit\n");
                 break;
             case(2):
-                printf("\n 1. SELL\n 2. BUY POTIONS\n 3. BUY ARMORS<<<\n 4. BUY WEAPONS\n 5. EXIT\n");
+                printf("\n 1. Sell\n 2. Buy potions\n 3. Buy armors<<<\n 4. Buy weapons\n 5. Exit\n");
                 break;
             case(3):
-                printf("\n 1. SELL\n 2. BUY POTIONS\n 3. BUY ARMORS\n 4. BUY WEAPONS<<<\n 5. EXIT\n");
+                printf("\n 1. Sell\n 2. Buy potions\n 3. Buy armors\n 4. Buy weapons<<<\n 5. Exit\n");
                 break;
             case(4):
-                printf("\n 1. SELL\n 2. BUY POTIONS\n 3. BUY ARMORS\n 4. BUY WEAPONS\n 5. EXIT<<<\n");
+                printf("\n 1. Sell\n 2. Buy potions\n 3. Buy armors\n 4. Buy weapons\n 5. Exit<<<\n");
                 break;      
         }
         
@@ -311,7 +307,7 @@ void shop(char *profileName)
     }
 }
 
-void buy_items(char *profileName, char *itemname)
+void buy_items(char *profileName, char *itemname) //РўСѓС‚ РІРѕР·РјРѕР¶РЅР° РѕС€РёР±РєР°
 {
     //////////////////////////////
     //           DATA           //
@@ -320,30 +316,27 @@ void buy_items(char *profileName, char *itemname)
     
     int gold = get_intValue(profileName,"gold");
     int mas_len = get_intValue(profileName,"inventory");
-    
     ////////////////////////////////
-    
-    int *inventory = (int*)malloc(mas_len*sizeof(int)); 
+    int *inventory = (int*)malloc(mas_len*sizeof(int));
     get_inventory(profileName,inventory);
-    
     char **item_name = (char**)malloc(mas_len*sizeof(char*));
+    printf("-----%d-----",mas_len);
     for(int i=0; i<mas_len; i++)
-    item_name[i]=(char*)malloc(32*sizeof(char));
-    
+        item_name[i]=(char*)malloc(32*sizeof(char));
     int power[mas_len], cost[mas_len];
-    
-    get_item_info(inventory,item_name,power,cost,mas_len);
-    
+
+    get_item_info(inventory,item_name,power,cost,mas_len); // РўСѓС‚ РѕС€РёР±РєР°
+
     ////////////////////////////////
-    
+
     int select=0;//menu 
     char button;//attributes 
     
     FILE *items=fopen("items.txt","r");
     if(items==NULL)
     {
-        system("cls");
-        //system("clear");
+        //system("cls");
+        system("clear");
         printf("items.txt not found");
         getch();
         return;
@@ -351,15 +344,15 @@ void buy_items(char *profileName, char *itemname)
     
     int mode=-1;
     if(strcmp(itemname,"potions")==0) //impossible to use switch-case
-    mode=0;
+        mode=0;
     if(strcmp(itemname,"armors")==0)
-    mode=1;
+        mode=1;
     if(strcmp(itemname,"weapons")==0)
-    mode=2;
+        mode=2;
     if(mode==-1)//default
     {
-        //system("clear");        
-        system("cls");
+        system("clear");
+        //system("cls");
         printf("incorrect itemname: %s\n",itemname);
         getch();
         fclose(items);
@@ -373,16 +366,17 @@ void buy_items(char *profileName, char *itemname)
     switch(mode)
     {
         case 0:
+
             last_item_index=much_items("potions")-1;//first potion id = 0
             
             a=level/5-1;
             b=level/5+1;
             
             if(a<min_potions)
-            a=min_potions;
+                a=min_potions;
             
             if(b>last_item_index)
-            b=last_item_index;
+                b=last_item_index;
 
             break;
         case 1:
@@ -392,23 +386,22 @@ void buy_items(char *profileName, char *itemname)
             b=level/2+3+min_armors;
             
             if(a<min_armors)
-            a=min_armors;
+                a=min_armors;
             
             if(b>last_item_index)
-            b=last_item_index;
+                b=last_item_index;
             
             break;
         case 2:
             last_item_index=much_items("weapons")+50;//first potion id = 50
-            
             a=level/2-3+min_weapons;
             b=level/2+3+min_weapons;
             
             if(a<min_weapons)
-            a=min_weapons;
+                a=min_weapons;
             
             if(b>last_item_index)
-            b=last_item_index;
+                b=last_item_index;
             
             break;
     }
@@ -420,7 +413,7 @@ void buy_items(char *profileName, char *itemname)
     int sh_cost[d];//item COST
     char **sh_item_name = (char**)malloc(d*sizeof(char*));
     for(int i=0; i<d; i++)
-    sh_item_name[i]=(char*)malloc(32*sizeof(char));
+        sh_item_name[i]=(char*)malloc(32*sizeof(char));
     //////////////////////////////
     //          END_DATA        //
     //////////////////////////////
@@ -433,8 +426,6 @@ void buy_items(char *profileName, char *itemname)
 
         //fscanf(items,"%d %s %d %d",&temp_ID, temp_item_name, &temp_POWER, &temp_COST);
         fscanf(items,"%d %s",&temp_ID, temp_item_name);
-
-        
 
         if(temp_ID>b)
         break;
@@ -465,17 +456,17 @@ void buy_items(char *profileName, char *itemname)
     
     while(1)
     {
-        system("cls");
-        //system("clear");
-        printf("Press ECS to exit\n");
+        //system("cls");
+        system("clear");
+        printf("Press ESC to exit\n");
         printf("YOUR GOLD: %d\n",gold);
         printf("\t\tNAME\t POWER\t COST\t\n\n");
         //printf("\n\tName\t\tPower\tCost\n");
         for(int i=0; i<d; i++)
         {
-            printf("%20s\t %d\t %d", sh_item_name[i], sh_power[i], sh_cost[i]);
+            printf("%18s\t %d\t %d", sh_item_name[i], sh_power[i], sh_cost[i]);
             if(select==i)
-            printf("<<<");
+                printf("<<<");
             printf("\n");
         }
         
@@ -513,7 +504,9 @@ void buy_items(char *profileName, char *itemname)
                         break;
                     gold-=sh_cost[select];
                     inventory[slot]=sh_id[select];
-                    item_name[slot]=sh_item_name[select];
+                    printf("%d slot ",slot);
+                    //item_name[slot]=sh_item_name[select];
+                    strcpy(item_name[slot],sh_item_name[select]);
                     power[slot]=sh_power[select];
                     cost[slot]=sh_cost[select];
                 }
@@ -521,17 +514,13 @@ void buy_items(char *profileName, char *itemname)
             case(ESC):
                 set_inventory(profileName,inventory);
                 set_intValue(profileName, "gold", gold);
-                
                 for(int i=0; i<d; i++)
-                {                    
                     free(sh_item_name[i]);
+                for(int i=0;i<mas_len;i++)
                     free(item_name[i]);
-                }
-                
                 free(sh_item_name);
                 free(item_name);
                 free(inventory);
-                
                 return;
         }
     }   
@@ -542,8 +531,8 @@ int much_items(char *itemname)
     FILE *items = fopen("items.txt","r");
     if(items==NULL)
     {
-        //system("clear");        
-        system("cls");
+        system("clear");
+        //system("cls");
         printf("item.txt not found\n");
         getch();
         return -1;
@@ -561,8 +550,8 @@ int much_items(char *itemname)
     mode=2;
     if(mode==-1)//default
     {
-        //system("clear");        
-        system("cls");
+        system("clear");
+        //system("cls");
         printf("incorrect itemname: %s\n",itemname);
         getch();
         fclose(items);

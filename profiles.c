@@ -346,12 +346,13 @@ void get_inventory(char *profileName, int *inventory)
         getch();
         return;//incorect profileName
     }
-    while (!feof(config))
+    while (!feof(config)) //тут вылет
     {
+
         fscanf(config,"%s", currentValueName);
         if(strcmp(currentValueName,"inventory")==0)
         {
-            fscanf(config,"%d", size);
+            fscanf(config,"%d", &size);
             for(int i=0; i<size; i++)
             fscanf(config,"%d", &inventory[i]);
             return;            
@@ -433,7 +434,7 @@ void set_Value(char *profileName, char *valueName, char *value)
     
 }
 
-void set_intValue(char *profileName, char *valueName, int value)
+void set_intValue(char *profileName, char *valueName, int value) //Тут возможна ошибка---нет тут ошибки
 {
     FILE *prim =fopen(profileName,"r");
     FILE *temp =fopen("system_temp.txt","w");
@@ -443,7 +444,6 @@ void set_intValue(char *profileName, char *valueName, int value)
     fscanf(prim,"%s", string);//"password"
     fscanf(prim,"%s", string);//value
     fprintf(temp,"password %s\n",string);
-    
     for(int i=0; i<11; i++)
     {
         fscanf(prim,"%s", string);
@@ -468,7 +468,6 @@ void set_intValue(char *profileName, char *valueName, int value)
     }
     freopen(profileName,"w",prim);
     freopen("system_temp.txt","r",temp);
-    
     fscanf(temp,"%s", string);//"password"
     fscanf(temp,"%s", string);//value
     fprintf(prim,"password %s\n",string);
@@ -495,10 +494,9 @@ void set_intValue(char *profileName, char *valueName, int value)
     free(string);
     fclose(prim);
     fclose(temp);
-    
 }
 
-void set_inventory(char *profileName, int *inventory)
+void set_inventory(char *profileName, int *inventory) //Тут возможно ошибка, вылетов с armor и def, чисто для potion
 {
     FILE *prim =fopen(profileName,"r");
     FILE *temp =fopen("system_temp.txt","w");
@@ -528,12 +526,10 @@ void set_inventory(char *profileName, int *inventory)
         }
     }
     freopen(profileName,"w",prim);
-    freopen("system_temp.txt","r",temp);    
-    
+    freopen("system_temp.txt","r",temp);
     fscanf(temp,"%s", string);//"password"
     fscanf(temp,"%s", string);//value
     fprintf(prim,"password %s\n",string);
-    
     for(int i=0; i<11; i++)
     {
         fscanf(temp,"%s", string);
@@ -556,6 +552,7 @@ void set_inventory(char *profileName, int *inventory)
     free(string);
     fclose(prim);
     fclose(temp);
+    printf("\n\nSSSSSSSSS\n\n");
 }
 
 int epmty_slot(int *inventory, int size)

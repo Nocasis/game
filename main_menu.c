@@ -1,7 +1,8 @@
 //work with maps
 //void menu() Call this
-#include "fight.c"
+//#include "fight.c"
 #include "play.c"
+#include "town.c"
 
 
 int much_maps()
@@ -134,7 +135,7 @@ int menu_select(int a)
 void menu(char *profile_name)  //Call this
 {
     int Select=0,level=1;
-    int what_exit;
+    int what_exit=1;
     while(1)
     {
         Select=menu_select(Select);
@@ -142,7 +143,13 @@ void menu(char *profile_name)  //Call this
         {
             case 0:
                 system("clear");
-                what_exit=play(level,profile_name);
+                while(what_exit==1)
+                {
+                    if(level > 1)
+                        town(profile_name);
+                    what_exit = play(level, profile_name);
+                    level++;
+                }
                 break;
             case 1:
                 system("clear");
