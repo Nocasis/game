@@ -32,6 +32,116 @@ int town_ESC();//-
 int much_items(char *itemname);//+
 void get_item_info(int* inventory, char** item_name, int* power, int* cost, int size);//+
 
+void re_inventory(char *profileName)
+{
+    int size = get_intValue(profileName,"inventory");
+
+    int power[size], cost[size];
+
+    int *inventory = (int*)malloc(sizeof(int)*size);
+    get_inventory(profileName,inventory);
+
+    char **item_name = (char**)malloc(size*sizeof(char*));
+    for(int i=0; i<size; i++)
+        item_name[i]=(char*)malloc(32*sizeof(char));
+
+    get_item_info(inventory,item_name,power,cost,size); // Тут исправить
+
+
+    int gold = get_intValue(profileName,"gold");
+    int current_armor = get_intValue(profileName,"current_armor");
+    int current_weapon = get_intValue(profileName,"current_weapon");
+    int defence = get_intValue(profileName,"defence");
+    int attack = get_intValue(profileName,"attack");
+    int equip = 2;
+    int i,j;
+    int pos=0;
+    while(1)
+    {
+        //system("cls");
+        system("clear");
+        printf("Press ECS to exit\n");
+        printf("YOUR INVENTORY\n");
+        printf("YOUR GOLD: %d\n",gold);
+        printf("\n\tName\t\t\tPower\n");
+
+        for( i=0; i<size; i++)
+        {
+            printf("%2d%20s\t\t%3d",i+1,item_name[i],power[i]);
+            if(i==pos)
+                printf("<<<");
+            printf("\n");
+        }
+
+        printf("\nArmor and weapon are used:\n");
+        for( i=0,j=0; i<size && j<equip; i++)
+        {
+            if (current_armor == inventory[i])
+            {
+                j++;
+                printf("%20s\t\t%3d\n", item_name[i], power[i]);
+            }
+            if (current_weapon == inventory[i])
+            {
+                j++;
+                printf("%20s\t\t%3d\n", item_name[i], power[i]);
+            }
+        }
+        for(j = j;j < equip; j++)
+            printf("\t\tNothing\n");
+
+        char temp = getch();
+
+        switch(temp)
+        {
+            case W:
+                if(pos==0)
+                    pos=size-1;
+                else
+                    pos--;
+                break;
+            case S:
+                if(pos==size-1)
+                    pos=0;
+                else
+                    pos++;
+                break;
+            case ENTER:                 //Тут исправить на изменения еквипа
+                if(inventory[pos]!=-1)
+                {
+                    if(inventory[pos]>=10 && inventory[pos]<50)
+                    {
+                        current_armor = inventory[pos];
+                        defence += power[i];
+                    }
+                    if(inventory[pos]>=50 && inventory[pos]<99)
+                    {
+                        current_weapon = inventory[pos];
+                        attack += power[i];
+                    }
+                    //gold+=cost[pos];
+                    //inventory[pos]=-1;
+                    //strcpy(item_name[pos],"empty");
+                    //power[pos]=0;
+                    //cost[pos]=0;
+                }
+                break;
+            case ESC:
+                set_intValue(profileName,"current_armor",current_armor);
+                set_intValue(profileName,"current_weapon",current_weapon);
+                set_intValue(profileName,"defence",defence);
+                set_intValue(profileName,"attack",defence);
+                set_inventory(profileName,inventory);
+                for(int i=0; i<size; i++)
+                    free(item_name[i]);
+                free(item_name);
+                free(inventory);
+                return;
+        }
+
+    }
+}
+
 void sell(char *profileName)
 {
     int size = get_intValue(profileName,"inventory");
@@ -40,6 +150,8 @@ void sell(char *profileName)
     
     int *inventory = (int*)malloc(sizeof(int)*size);
     get_inventory(profileName,inventory);
+    int current_armor = get_intValue(profileName,"current_armor");
+    int current_weapon = get_intValue(profileName,"current_weapon");
     
     char **item_name = (char**)malloc(size*sizeof(char*));
     for(int i=0; i<size; i++)
@@ -57,11 +169,11 @@ void sell(char *profileName)
         printf("Press ECS to exit\n");
         printf("Well, let's see what you offer me\n");
         printf("YOUR GOLD: %d\n",gold);
-        printf("\n\tName\t\tPower\tCost\n");
+        printf("\n\tName\t\t\tPower\tCost\n");
         
         for(int i=0; i<size; i++)
         {
-            printf("%2d%20s\t%3d\t%3d",i+1,item_name[i],power[i],cost[i]);
+            printf("%2d%20s\t\t%3d\t%3d",i+1,item_name[i],power[i],cost[i]);
             if(i==pos)
             printf("<<<");
             printf("\n");
@@ -84,8 +196,16 @@ void sell(char *profileName)
                 pos++;
                 break;
             case ENTER:
-                if(inventory[pos]!=-1)
+                if(inventory[pos]!=-1) // Тут евквип пофиксить
                 {
+                    if(current_armor = inventory[pos])
+                    {
+                        current_armor = -1;
+                    }
+                    if(current_weapon = inventory[pos])
+                    {
+                        current_weapon = -1;
+                    }
                     gold+=cost[pos];
                     inventory[pos]=-1;
                     strcpy(item_name[pos],"empty");
@@ -96,6 +216,8 @@ void sell(char *profileName)
             case ESC:
                 set_inventory(profileName,inventory);
                 set_intValue(profileName,"gold",gold);
+                set_intValue(profileName,"current_armor",current_armor);
+                set_intValue(profileName,"current_weapon",current_weapon);
                 for(int i=0; i<size; i++)
                     free(item_name[i]);
                 
@@ -106,7 +228,6 @@ void sell(char *profileName)
         }
         
     }
-  
 }
 
 
@@ -171,7 +292,7 @@ void town(char *profileName)
                 shop(profileName);
                 break;
             case 1:
-                //lvl_up();
+                re_inventory(profileName);
                 break;
             case 2:
                 return;
@@ -196,13 +317,13 @@ int town_menu()
         switch(select)
         {
             case(0):
-                printf("\n 1.Shop<<<\n 2.Level Up!\n 3.Leave the town\n");
+                printf("\n 1.Shop<<<\n 2.Inventory\n 3.Leave the town\n");
                 break;
             case(1):
-                printf("\n 1.Shop\n 2.Level Up!<<<\n 3.Leave the town\n");
+                printf("\n 1.Shop\n 2.Inventory<<<\n 3.Leave the town\n");
                 break;
             case(2):
-                printf("\n 1.Shop\n 2.Level Up!\n 3.Leave the town<<<\n");
+                printf("\n 1.Shop\n 2.Inventory\n 3.Leave the town<<<\n");
                 break;
             
         }
@@ -320,7 +441,6 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
     int *inventory = (int*)malloc(mas_len*sizeof(int));
     get_inventory(profileName,inventory);
     char **item_name = (char**)malloc(mas_len*sizeof(char*));
-    printf("-----%d-----",mas_len);
     for(int i=0; i<mas_len; i++)
         item_name[i]=(char*)malloc(32*sizeof(char));
     int power[mas_len], cost[mas_len];
@@ -406,8 +526,6 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
             break;
     }
     d=b-a+1;// delta(d)=b(beta)-a(alpha) + 1
-    // count of [1;2] => 2-1+1=2    
-    
     int sh_id[d]; //item ID (sh-shop)
     int sh_power[d]; //item POWER
     int sh_cost[d];//item COST
@@ -424,7 +542,6 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
         int temp_ID, temp_POWER, temp_COST;
         char temp_item_name[32];
 
-        //fscanf(items,"%d %s %d %d",&temp_ID, temp_item_name, &temp_POWER, &temp_COST);
         fscanf(items,"%d %s",&temp_ID, temp_item_name);
 
         if(temp_ID>b)
@@ -471,10 +588,7 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
         }
         
         printf("\nYOUR INVENTORY:\n\n");
-        /*for(int i=0; i<mas_len; i++)
-        {
-            printf("%d. %d\n",i+1,inventory[i]);            
-        }*/
+
         for(int i=0; i<mas_len; i++)
         {
             printf("%2d.%20s\t%3d\t%3d\n",i+1,item_name[i],power[i],cost[i]);
