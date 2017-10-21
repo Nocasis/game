@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include "fight.c"
+//#include "fight.c"
 #include "profiles.c"
+#include "town.c"
+#include "fight.c"
 
 #define ESC 27
 #define W 119
@@ -17,6 +18,11 @@
 #define coins 3
 #define enemy 4
 #define spawn 5
+
+
+void Selected(int level,char *map_name);
+void print_stat(int exp,int hpGG,int gold,int profile_level);
+void print_map(int **Map,int i,int j,int GGxy[2]);
 
 
 
@@ -267,19 +273,18 @@ int play(int level,char *profile_name)
                         }
                         if(exit==2)
                             return 0;
-                        break;//Тут добавить файт
+                        break;
                     case coins:
                         GGxy[0]--;
                         Map[GGxy[0]][GGxy[1]]=empty;
                         loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);//Here i should add skill_points
-                        break;//Тут добавить лут чего-либо
+                        break;
                     case finish:
                         set_intValue(profile_name,"gold",gold);
                         set_intValue(profile_name,"experience",experience);
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
                         set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"hp",GG[0]);
                         set_intValue(profile_name,"attack",GG[1]);
                         set_intValue(profile_name,"defence",GG[2]);
                         return 1;
@@ -319,7 +324,6 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
                         set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"hp",GG[0]);
                         set_intValue(profile_name,"attack",GG[1]);
                         set_intValue(profile_name,"defence",GG[2]);
                         return 1;
@@ -359,7 +363,6 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
                         set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"hp",GG[0]);
                         set_intValue(profile_name,"attack",GG[1]);
                         set_intValue(profile_name,"defence",GG[2]);
                         return 1;
@@ -399,7 +402,6 @@ int play(int level,char *profile_name)
                         set_intValue(profile_name,"player_level",profile_level);
                         set_intValue(profile_name,"skill_points",skill_points);
                         set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"hp",GG[0]);
                         set_intValue(profile_name,"attack",GG[1]);
                         set_intValue(profile_name,"defence",GG[2]);
                         return 1;

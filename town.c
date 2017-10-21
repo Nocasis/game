@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #define ESC 27
 #define W 119
 #define A 97
@@ -21,7 +22,6 @@ const int max_weapons = 99;
 
 void town(char *profileName);//+
 void shop(char *profileName);//+
-void lvl_up(char *profileName);//-
 
 void sell(char *profileName);//+
 void buy_items(char *profileName, char *itemname);//+
@@ -31,6 +31,9 @@ int town_ESC();//-
 
 int much_items(char *itemname);//+
 void get_item_info(int* inventory, char** item_name, int* power, int* cost, int size);//+
+void re_inventory(char *profileName);
+void sell(char *profileName);
+
 
 void re_inventory(char *profileName)
 {
@@ -45,8 +48,7 @@ void re_inventory(char *profileName)
     for(int i=0; i<size; i++)
         item_name[i]=(char*)malloc(32*sizeof(char));
 
-    get_item_info(inventory,item_name,power,cost,size); // Тут исправить
-
+    get_item_info(inventory,item_name,power,cost,size);
 
     int gold = get_intValue(profileName,"gold");
     int current_armor = get_intValue(profileName,"current_armor");
@@ -88,7 +90,7 @@ void re_inventory(char *profileName)
             }
         }
         for(j = j;j < equip; j++)
-            printf("\t\tNothing\n");
+            printf("\t\tempty\t\t0\n");
 
         char temp = getch();
 
@@ -107,31 +109,37 @@ void re_inventory(char *profileName)
                     pos++;
                 break;
             case ENTER:                 //Тут исправить на изменения еквипа
-                if(inventory[pos]!=-1)
+                if(inventory[pos] != -1)
                 {
-                    if(inventory[pos]>=10 && inventory[pos]<50)
+                    if(inventory[pos]>=10 && inventory[pos]<50 && current_armor != inventory[pos] )
                     {
+                        if(current_armor != -1)
+                        {
+                            for (i = 0; i < size && current_armor != inventory[i]; i++);
+                            defence -= power[i];
+                        }
                         current_armor = inventory[pos];
-                        defence += power[i];
+                        defence += power[pos];
                     }
-                    if(inventory[pos]>=50 && inventory[pos]<99)
+                    if(inventory[pos]>=50 && inventory[pos]<99 && current_weapon != inventory[pos])
                     {
+                        if(current_weapon != -1)
+                        {
+                            for (i = 0; i < size && current_weapon != inventory[i]; i++);
+                            attack -= power[i];
+                        }
                         current_weapon = inventory[pos];
-                        attack += power[i];
+                        attack += power[pos];
                     }
-                    //gold+=cost[pos];
-                    //inventory[pos]=-1;
-                    //strcpy(item_name[pos],"empty");
-                    //power[pos]=0;
-                    //cost[pos]=0;
+
                 }
                 break;
             case ESC:
                 set_intValue(profileName,"current_armor",current_armor);
                 set_intValue(profileName,"current_weapon",current_weapon);
                 set_intValue(profileName,"defence",defence);
-                set_intValue(profileName,"attack",defence);
-                set_inventory(profileName,inventory);
+                set_intValue(profileName,"attack",attack);
+                //set_inventory(profileName,inventory);
                 for(int i=0; i<size; i++)
                     free(item_name[i]);
                 free(item_name);
@@ -160,7 +168,9 @@ void sell(char *profileName)
     get_item_info(inventory,item_name,power,cost,size);
     
     int gold = get_intValue(profileName,"gold");
-    
+    int defence = get_intValue(profileName,"defence");
+    int attack = get_intValue(profileName,"attack");
+
     int pos=0;
     while(1)
     {
@@ -198,13 +208,15 @@ void sell(char *profileName)
             case ENTER:
                 if(inventory[pos]!=-1) // Тут евквип пофиксить
                 {
-                    if(current_armor = inventory[pos])
+                    if(current_armor == inventory[pos])
                     {
                         current_armor = -1;
+                        defence -= power[pos];
                     }
-                    if(current_weapon = inventory[pos])
+                    if(current_weapon == inventory[pos])
                     {
                         current_weapon = -1;
+                        attack -= power[pos];
                     }
                     gold+=cost[pos];
                     inventory[pos]=-1;
@@ -218,6 +230,8 @@ void sell(char *profileName)
                 set_intValue(profileName,"gold",gold);
                 set_intValue(profileName,"current_armor",current_armor);
                 set_intValue(profileName,"current_weapon",current_weapon);
+                set_intValue(profileName,"defence",defence);
+                set_intValue(profileName,"attack",attack);
                 for(int i=0; i<size; i++)
                     free(item_name[i]);
                 
@@ -265,7 +279,6 @@ void get_item_info(int* inventory, char** item_name, int* power, int* cost, int 
             }
         }      
     }
-    //printf("\n\nss\n\n");
     for(int i=0; i<size; i++)
     {
         if(inventory[i]==-1)
@@ -578,7 +591,6 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
         printf("Press ESC to exit\n");
         printf("YOUR GOLD: %d\n",gold);
         printf("\t\tNAME\t POWER\t COST\t\n\n");
-        //printf("\n\tName\t\tPower\tCost\n");
         for(int i=0; i<d; i++)
         {
             printf("%18s\t %d\t %d", sh_item_name[i], sh_power[i], sh_cost[i]);
@@ -613,13 +625,12 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
             case(ENTER):
                 if(gold >= sh_cost[select])
                 {
-                    int slot=epmty_slot(inventory,mas_len);
+                    int slot=empty_slot(inventory,mas_len);
                     if(slot==-1)
                         break;
                     gold-=sh_cost[select];
                     inventory[slot]=sh_id[select];
                     printf("%d slot ",slot);
-                    //item_name[slot]=sh_item_name[select];
                     strcpy(item_name[slot],sh_item_name[select]);
                     power[slot]=sh_power[select];
                     cost[slot]=sh_cost[select];

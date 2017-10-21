@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h> //malloc
+#include <stdlib.h>
 
 
 #define Pcatalog "profiles.txt"
@@ -17,19 +17,19 @@
 #define TAB 9
 
 const int len=32;
-const int attack=10, defence=5, inventory=5, hp=100; //default profile parametrs
+const int attack=10, defence=10, inventory=5, hp=100; //default profile parametrs
 
 char *profile_menu(); //call this (it return current profile_name)
 
 //char *name=(char *)malloc(32*sizeof(char));
-//name=profile_menu();
+//name = profile_menu();
 
 int get_intValue(char *profileName, char *valueName);
 char *get_stringValue(char *profileName, char *valueName);
 
 void get_inventory(char *profileName, int *inventory);
 void set_inventory(char *profileName, int *inventory);
-int epmty_slot(int *inventory, int size); //return nearest empty slot
+int empty_slot(int *inventory, int size); //return nearest empty slot
 
 void set_Value(char *profileName, char *valueName, char *value);
 void set_intValue(char *profileName, char *valueName, int value);
@@ -552,10 +552,9 @@ void set_inventory(char *profileName, int *inventory) //Тут возможно 
     free(string);
     fclose(prim);
     fclose(temp);
-    printf("\n\nSSSSSSSSS\n\n");
 }
 
-int epmty_slot(int *inventory, int size)
+int empty_slot(int *inventory, int size)
 {
     for(int i=0; i<size; i++)
     {
