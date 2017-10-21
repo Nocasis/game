@@ -1,0 +1,100 @@
+0 Water 2 1
+1 Low_Heal_Potion 10 5
+2 Heal_Potion 25 13
+3 Big_Heal_Potion 50 27
+4 Large_Heal_Potion 100 55
+5 NULL
+6 NULL
+7 NULL
+8 NULL
+9 NULL
+10 Bronze_Helm 1 5
+11 Bronze_Armor 3 15
+12 Bronze_Shield 5 25
+13 Iron_Helm 6 30
+14 Iron_Armor 9 45
+15 Iron_Shield 13 65
+16 Steal_Helm 15 75
+17 Steal_Armor 19 95
+18 Steal_Shield 25 125
+19 Heavy_Armor 30 150
+20 Massive_Helm 33 165
+21 Huge_Shield 39 195
+22 Guardian_Set 50 250
+23 Kngihgt_Set 70 350
+24 NULL
+25 NULL
+26 NULL
+27 NULL
+28 NULL
+29 NULL
+30 NULL
+31 NULL
+32 NULL
+33 NULL
+34 NULL
+35 NULL
+36 NULL
+37 NULL
+38 NULL
+39 NULL
+40 NULL
+41 NULL
+42 NULL
+43 NULL
+44 NULL
+45 NULL
+46 NULL
+47 NULL
+48 NULL
+49 NULL
+50 Stick 1 4
+51 Axe 3 12
+52 Bow 5 20
+53 Bronze_Short_Sword 6 24
+54 Bronze_Long_Sword 9 36
+55 Two-handed_Axe 13 52
+56 Two-handed_Bronze_Sword 14 56
+57 Iron_Short_Sword 15 60
+58 Iron_Long_Sword 19 76
+59 Two-handed_Iron_Sword 25 100
+60 Long_Bow 27 108
+61 Berserk_Axe 35 140
+62 Crossbow 39 156
+63 Scepter 43 172
+64 Steal_Long_Sword 49 196
+65 Flamberge 58 232
+66 Rune_Sword 70 280
+67 NULL
+68 NULL
+69 NULL
+70 NULL
+71 NULL
+72 NULL
+73 NULL
+74 NULL
+75 NULL
+76 NULL
+77 NULL
+78 NULL
+79 NULL
+80 NULL
+81 NULL
+82 NULL
+83 NULL
+84 NULL
+85 NULL
+86 NULL
+87 NULL
+88 NULL
+89 NULL
+90 NULL
+91 NULL
+92 NULL
+93 NULL
+94 NULL
+95 NULL
+96 NULL
+97 NULL
+98 NULL
+99 NULL
