@@ -15,6 +15,7 @@
 #define SPACE 32
 #define ENTER 10
 #define TAB 9
+#define BackSpace 8
 
 const int len=32;
 const int attack=10, defence=10, inventory=5, hp=100; //default profile parametrs
@@ -40,119 +41,104 @@ void add_profile(char *profile);    //Add profile to directory
 int much_profiles();                //Profiles count
 
 char *new_profile();                 //Create new profile (it return created profile_name)
+char *log_in_menu();                //log in, return current profile
 
+int isCorrect(char sym);
+int user_input(char *string, int size, char *Message);
 
 
 char *profile_menu()
-{    
-    int count=much_profiles()+1;
-    
-    FILE *profile = fopen(Pcatalog,"r");
-    if(profile==NULL)
-    {
-        printf("There are no profiles \nCreate new\n");
-        getch();
-        return new_profile();
-    }
-    
-    int i;
-    char **names;                             
-    names=(char **)malloc(count*sizeof(char *));
-    for(i=0;i<count;i++)
-    names[i]=(char *)malloc(len*sizeof(char));
-    
-    char *result=(char *)malloc(len*sizeof(char));
-    
-    names[0]="New profile";
-    
-    for(i=1;i<count;i++)
-    fscanf(profile,"%s",names[i]);
-    
-    fclose(profile);
-    
-    char button;
+{
     int current=0;
+    char button;
     
     while(1)
     {
-        //system("cls");
-        system("clear");
-        for(i=0;i<count;i++)
-        {
-            printf("%d. %s ",i,names[i]);
-            if(current==i)
-            printf("<<<");
-            
-            printf("\n");
-        }
+        system("cls");
+        //system("clear");
+        
+        if(current==0)
+        printf("Log In<<<\nSign Up\n");
+        else
+        printf("Log In\nSign Up<<<\n");
         
         button=getch();
+        
         switch(button)
         {
             case(W):
                 if(current==0)
-                current=count-1;
+                current=1;
                 else
-                current--;
+                current=0;
                 break;
             case(S):
-                if(current==count-1)
-                current=0;
-                else
-                current++;
-                break;
-            case(ENTER): 
                 if(current==0)
-                {
-                    for(i=1; i<count; i++)
-                        free(names[i]);
-                    free(names);
-                    return new_profile();
-                }
-                
-                char pass[len], temp[len];
- 
- /////////////////////////////////////////////////////////////////               
-                FILE *config =fopen(names[current],"r");
-                if (config==NULL)
-                {
-                    printf("\nerror\n");
-                    getch();
-                    break;
-                }
-                while (!feof(config))
-                {
-                    fscanf(config,"%s", temp);
-                    fscanf(config,"%s", pass);
-                    if(strcmp(temp,"password")==0)
-                    break;                    
-                }
-////////////////////////////////////////////////////////////////////                
-                while(1)
-                {
-                    char password[len];
-                    //system("cls");
-                    system("clear");
-                    printf("Enter password: ");
-                    fgets(password,len,stdin);
-                    for(i=0;i<len;i++)
-                    {
-                        if(password[i]=='\0')
-                        password[i-1]='\0';
-                    }
-                    if(strcmp(password,pass)==0)
-                    {
-                        strcpy(result,names[current]);
-                        return result;
-                    }
-               }    
-
-                strcpy(result,names[current]);
-                return result;
-        }       
+                current=1;
+                else
+                current=0;
+                break;
+            case(ENTER):
+                if(current==0)
+                return log_in_menu();
+                else
+                return new_profile();
+                break;
+        }
         
     }
-    //return " ";
+    
+}
+
+char *log_in_menu()
+{
+    char *name, *password, *temp;
+    name=(char *)malloc(len*sizeof(char));
+    password=(char *)malloc(len*sizeof(char));
+    temp=(char *)malloc(len*sizeof(char));
+    char format[5]=".txt";
+    
+    FILE *profile = fopen(Pcatalog,"r");
+    if(profile==NULL)
+    {
+        system("cls");
+        //system("clear");
+        printf("data is not found, create new profile\n");
+        getch();
+        return new_profile();
+    }
+    
+    while(1)
+    {
+        fseek(profile,0,SEEK_SET);
+        system("cls");
+        //system("clear");
+        
+
+        user_input(name,len-5,"Enter your profilename");//input profilename
+        strcat(name,format);
+        
+        user_input(password,len-5,"Enter your password");//input password  
+        
+        while(!feof(profile))
+        {
+            fscanf(profile,"%s",temp);
+            if(strcmp(name,temp)==0)
+            {
+                temp=get_stringValue(name, "password");
+                if(strcmp(password,temp)==0)
+                {
+                    free (password);
+                    free(temp);
+                    fclose(profile);
+                    return name;
+                }               
+            }
+        }
+        
+        printf("\nIncorrect login or passwrod\n");
+        getch();        
+    }
     
 }
 
@@ -167,29 +153,18 @@ char *new_profile()
     {
         //system("cls");
         system("clear");
-        printf("Enter your profile name: ");
-        fgets(name,len-15,stdin);
-        for(i=0;i<len;i++)
-        {
-            if(name[i]=='\0')
-            name[i-1]='\0';
-        }
         
+        user_input(name,len-5,"Enter your profilename");//input profilename
         strcat(name,format);
+        
         if(check_profile(name))
         {
-            char password[len];
-            //system("cls");
-            system("clear");
-            printf("Enter your password: ");
-            fgets(password,len,stdin);
-            for(i=0;i<len;i++)
-            {
-                if(password[i]=='\0')
-                password[i-1]='\0';
-            }
+            char *password;
+            password=(char *)malloc(len*sizeof(char));
+            system("cls");
+            //system("clear");
             
-            //it need check for empty password
+            user_input(password,len-5,"Enter your password");//input password
             
             add_profile(name);
             FILE * new_profile = fopen(name,"w");
@@ -213,7 +188,7 @@ char *new_profile()
             fprintf(new_profile,"hp %d\n",hp);
             
             
-            
+            free(password);
             fclose(new_profile);
             return name;
                                  
@@ -564,3 +539,70 @@ int empty_slot(int *inventory, int size)
     return -1;
 }
 
+int isCorrect(char sym)
+{
+    //      a               z           A           Z               0           9
+    if(  ((sym>=97)&&(sym<=122)) || ((sym>=65)&&(sym<=90)) || ((sym>=48)&&(sym<=57))  )
+    return 1;
+    else
+    return 0;
+}
+
+int user_input(char *string, int size, char *Message)
+{
+    char button;
+    int count=0;
+    strcpy(string,"");
+    
+    while(1)
+    {
+        system("cls");
+        //system("clear");
+        printf("%s\n",Message);
+        for(int i=0; i<count; i++)
+        printf("%c",string[i]);
+        //printf("*");
+        
+        button = getch();
+        switch(button)
+        {
+            /*case(ESC):
+                strcpy(string,"");
+                return 0;//отмена ввода
+                break;*/
+            case(ENTER):
+                if(count>2)
+                    return 1;//ввод корректно завршен
+                else
+                    printf("\nToo short\n");
+                    getch();
+                break;
+            case(BackSpace)://удалить крайний правый символ
+                count--;
+                string[count]='\0';
+                break;
+            default://добавить корректный символ
+                if(isCorrect(button))
+                {
+                    if(count<size-1)
+                    {
+                        string[count]=button;
+                        count++;
+                        string[count]='\0';
+                    }
+                    else
+                    {
+                        printf("\nIts limited to %d characters", size-1);
+                        getch();   
+                    }
+                }
+                else
+                {
+                    printf("\nIncorrect symbol!\n");
+                    getch();                    
+                }
+                break;            
+        }
+    }
+    return 1;
+}
