@@ -5,10 +5,10 @@
 
 
 int much_maps();
-int Select_map(char *profile_name);
+int Select_map(MYSQL *mysql,char *profile_name);
 void menu_list(int a);
 int menu_select(int a);
-void menu(char *profile_name);
+void menu(MYSQL *mysql,char *profile_name);
 
 
 int much_maps()
@@ -28,26 +28,31 @@ int much_maps()
 
 
 
-int Select_map(char *profile_name)
+int Select_map(MYSQL *mysql,char *profile_name)
 {
-    int a=1, mapcount=much_maps(),flag;
+    int a=1, mapcount=much_maps(),flag,i,j=1;
     FILE *file_maps;
     char string[30],temp;
     file_maps = fopen("catalog.txt", "r");
-    int map_level=get_intValue(profile_name,"map_level");
+    int map_level=get_intValue(mysql,profile_name,"map_level");
     while(1)
     {
         fseek(file_maps,0,SEEK_SET);
         system("clear");
-        printf("\t\tChoice the map\n");
+        printf("\t\tChoice the map.\n\t\tYour map_level: %d\n\tUse A and D buttons to list maps\n",map_level);
         flag=1;
+        i=1;
         while(fscanf(file_maps,"%s",string)!=EOF)
         {
-            printf("%s",string);
-            if(flag==a)
-                printf("<<<");
+            if((j <= i) && (i<= j+29))
+            {
+                printf("%d.%s", i, string);
+                if (flag == a)
+                    printf(" <<<");
+                printf("\n");
+            }
             flag++;
-            printf("\n");
+            i++;
         }
         temp=getch();
         switch (temp)
@@ -65,16 +70,38 @@ int Select_map(char *profile_name)
                 }
                 return a;
             case W:
-                if((a<=1)||(a>mapcount))
-                    a=mapcount;
+                if((a<=j)||(a>j+30))
+                    //a=mapcount;
+                    a=j+29;
                 else
                     a--;
                 break;
             case S:
-                if((a<1)||(a>=mapcount))
-                    a=1;
+                if((a<1)||(a>=mapcount)||(a>j+28))
+                    a=j;
                 else
                     a++;
+                break;
+            case A:
+                if(j <= 1)
+                    j = 1;
+                else
+                {
+                    j -= 30;
+                    //flag -= 30;
+                    a -= 30;
+                }
+                break;
+            case D:
+                if(j + 30 > 1000)
+                j = 1000;
+
+                else
+                {
+                    j += 30;
+                    //flag += 30;
+                    a += 30;
+                }
         }
     }
 }
@@ -89,20 +116,13 @@ void menu_list(int a)
     switch(a)
             {
                 case 0:
-                        printf("1.New Game<<<\n2.Select Map \n3.Map Creator\n4.About \n5.Exit\n");
+                        printf("New Game<<<\nSelect Map \nExit\n");
                         break;
                 case 1:
-                        printf("1.New Game\n2.Select Map<<< \n3.Map Creator\n4.About \n5.Exit\n");
+                        printf("New Game\nSelect Map<<< \nExit\n");
                         break;
                 case 2:
-                        printf("1.New Game\n2.Select Map \n3.Map Creator<<<\n4.About \n5.Exit\n");
-                        break;
-
-                case 3:
-                        printf("1.New Game\n2.Select Map \n3.Map Creator\n4.About<<<\n5.Exit\n");
-                        break;
-                case 4:
-                        printf("1.New Game\n2.Select Map\n3.Map Creator\n4.About\n5.Exit<<<\n");
+                        printf("New Game\nSelect Map \nExit<<<\n");
                         break;
             }
 }
@@ -110,7 +130,7 @@ void menu_list(int a)
 
 int menu_select(int a)
 {
-    int menucount=4;
+    int menucount=2;
     char temp;
     while(1)
     {
@@ -121,7 +141,7 @@ int menu_select(int a)
         switch (temp)
         {
             case ENTER:
-                return a; 
+                return a;
             case W:
                 if((a<=0)||(a>menucount))
                     a=menucount;
@@ -138,12 +158,13 @@ int menu_select(int a)
 }
 
 
-void menu(char *profile_name)  //Call this
+void menu(MYSQL *mysql,char *profile_name)  //Call this
 {
     int Select=0,level=1;
     int what_exit=1;
     while(1)
     {
+        level = 1;
         Select=menu_select(Select);
         switch (Select)
         {
@@ -152,8 +173,8 @@ void menu(char *profile_name)  //Call this
                 while(what_exit == 1)
                 {
                     if(level > 1)
-                        town(profile_name);
-                    what_exit = play(level, profile_name);
+                        town(mysql,profile_name);
+                    what_exit = play(mysql,level, profile_name);
                     level++;
                 }
                 what_exit = 1;
@@ -161,22 +182,20 @@ void menu(char *profile_name)  //Call this
                 break;
             case 1:
                 system("clear");
-                level=Select_map(profile_name);
-                if(level==0)
+                level = Select_map(mysql, profile_name);
+                if(level == 0)
                     break;
-                what_exit=play(level,profile_name);
+                while(what_exit == 1)
+                {
+                    what_exit = play(mysql, level, profile_name);
+                    level++;
+                    if(level > 1 && what_exit == 1)
+                        town(mysql,profile_name);
+                }
+                what_exit = 1;
+                level = 1;
                 break;
             case 2:
-                system("clear");
-                mapGenerator();
-                break;
-            case 3:
-                system("clear");
-                printf("Test3");
-
-                getch();
-                break;
-            case 4:
                 system("clear");
                 return;
             default:

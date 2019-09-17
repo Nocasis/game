@@ -1,0 +1,1 @@
+CREATE TABLE user_profile (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,name VARCHAR(30),password VARCHAR(30),map_level INT,player_level INT,attack INT,defence INT,skill_points INT,inventory INT,inventory_slot_1 INT,inventory_slot_2 INT,inventory_slot_3 INT,inventory_slot_4 INT,inventory_slot_5 INT,current_armor INT,current_weapon INT,experience INT,gold INT,hp INT);

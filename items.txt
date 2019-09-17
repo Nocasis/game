@@ -1,27 +1,27 @@
-0 Water 2 1
-1 Low_Heal_Potion 10 5
-2 Heal_Potion 25 13
-3 Big_Heal_Potion 50 27
-4 Large_Heal_Potion 100 55
+0 Water 2 2
+1 Low_Heal_Potion 10 50
+2 Heal_Potion 25 130
+3 Big_Heal_Potion 50 270
+4 Large_Heal_Potion 100 550
 5 NULL
 6 NULL
 7 NULL
 8 NULL
 9 NULL
-10 Bronze_Helm 1 5
-11 Bronze_Armor 3 15
-12 Bronze_Shield 5 25
-13 Iron_Helm 6 30
-14 Iron_Armor 9 45
-15 Iron_Shield 13 65
-16 Steal_Helm 15 75
-17 Steal_Armor 19 95
-18 Steal_Shield 25 125
-19 Heavy_Armor 30 150
-20 Massive_Helm 33 165
-21 Huge_Shield 39 195
-22 Guardian_Set 50 250
-23 Kngihgt_Set 70 350
+10 Bronze_Helm 1 50
+11 Bronze_Armor 3 350
+12 Bronze_Shield 5 450
+13 Iron_Helm 6 500
+14 Iron_Armor 9 650
+15 Iron_Shield 13 850
+16 Steal_Helm 15 1050
+17 Steal_Armor 19 1350
+18 Steal_Shield 25 1850
+19 Heavy_Armor 30 2000
+20 Massive_Helm 33 3850
+21 Huge_Shield 39 4150
+22 Guardian_Set 50 5000
+23 Kngihgt_Set 70 7000
 24 NULL
 25 NULL
 26 NULL
@@ -48,23 +48,23 @@
 47 NULL
 48 NULL
 49 NULL
-50 Stick 1 4
-51 Axe 3 12
-52 Bow 5 20
-53 Bronze_Short_Sword 6 24
-54 Bronze_Long_Sword 9 36
-55 Two-handed_Axe 13 52
-56 Two-handed_Bronze_Sword 14 56
-57 Iron_Short_Sword 15 60
-58 Iron_Long_Sword 19 76
-59 Two-handed_Iron_Sword 25 100
-60 Long_Bow 27 108
-61 Berserk_Axe 35 140
-62 Crossbow 39 156
-63 Scepter 43 172
-64 Steal_Long_Sword 49 196
-65 Flamberge 58 232
-66 Rune_Sword 70 280
+50 Stick 1 60
+51 Axe 3 320
+52 Bow 5 580
+53 Bronze_Short_Sword 6 680
+54 Bronze_Long_Sword 9 950
+55 Two-handed_Axe 13 1320
+56 Two-handed_Bronze_Sword 14 1560
+57 Iron_Short_Sword 15 1800
+58 Iron_Long_Sword 19 2020
+59 Two-handed_Iron_Sword 25 2500
+60 Long_Bow 27 2780
+61 Berserk_Axe 35 3400
+62 Crossbow 39 3960
+63 Scepter 43 4320
+64 Steal_Long_Sword 49 4860
+65 Flamberge 58 5820
+66 Rune_Sword 70 7000
 67 NULL
 68 NULL
 69 NULL

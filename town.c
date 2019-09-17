@@ -20,29 +20,29 @@ const int min_weapons = 50;
 const int max_weapons = 99;
 
 
-void town(char *profileName);//+
-void shop(char *profileName);//+
+void town(MYSQL *mysql,char *profileName);//+
+void shop(MYSQL *mysql,char *profileName);//+
 
-void sell(char *profileName);//+
-void buy_items(char *profileName, char *itemname);//+
+void sell(MYSQL *mysql,char *profileName);//+
+void buy_items(MYSQL *mysql,char *profileName, char *itemname);//+
 
 int town_menu();//+
 int town_ESC();//-
 
 int much_items(char *itemname);//+
 void get_item_info(int* inventory, char** item_name, int* power, int* cost, int size);//+
-void re_inventory(char *profileName);
-void sell(char *profileName);
+void re_inventory(MYSQL *mysql,char *profileName);
+void sell(MYSQL *mysql,char *profileName);
 
 
-void re_inventory(char *profileName)
+void re_inventory(MYSQL *mysql,char *profileName)
 {
-    int size = get_intValue(profileName,"inventory");
+    int size = get_intValue(mysql,profileName,"inventory");
 
     int power[size], cost[size];
 
     int *inventory = (int*)malloc(sizeof(int)*size);
-    get_inventory(profileName,inventory);
+    get_inventory(mysql,profileName,inventory);
 
     char **item_name = (char**)malloc(size*sizeof(char*));
     for(int i=0; i<size; i++)
@@ -50,11 +50,11 @@ void re_inventory(char *profileName)
 
     get_item_info(inventory,item_name,power,cost,size);
 
-    int gold = get_intValue(profileName,"gold");
-    int current_armor = get_intValue(profileName,"current_armor");
-    int current_weapon = get_intValue(profileName,"current_weapon");
-    int defence = get_intValue(profileName,"defence");
-    int attack = get_intValue(profileName,"attack");
+    int gold = get_intValue(mysql,profileName,"gold");
+    int current_armor = get_intValue(mysql,profileName,"current_armor");
+    int current_weapon = get_intValue(mysql,profileName,"current_weapon");
+    int defence = get_intValue(mysql,profileName,"defence");
+    int attack = get_intValue(mysql,profileName,"attack");
     int equip = 2;
     int i,j;
     int pos=0;
@@ -69,7 +69,7 @@ void re_inventory(char *profileName)
 
         for( i=0; i<size; i++)
         {
-            printf("%2d%20s\t\t%3d",i+1,item_name[i],power[i]);
+            printf("%20s\t\t%3d",item_name[i],power[i]);
             if(i==pos)
                 printf("<<<");
             printf("\n");
@@ -108,7 +108,7 @@ void re_inventory(char *profileName)
                 else
                     pos++;
                 break;
-            case ENTER:                 //Тут исправить на изменения еквипа
+            case ENTER:
                 if(inventory[pos] != -1)
                 {
                     if(inventory[pos]>=10 && inventory[pos]<50 && current_armor != inventory[pos] )
@@ -135,11 +135,11 @@ void re_inventory(char *profileName)
                 }
                 break;
             case ESC:
-                set_intValue(profileName,"current_armor",current_armor);
-                set_intValue(profileName,"current_weapon",current_weapon);
-                set_intValue(profileName,"defence",defence);
-                set_intValue(profileName,"attack",attack);
-                //set_inventory(profileName,inventory);
+                set_intValue(mysql,profileName,"current_armor",current_armor);
+                set_intValue(mysql,profileName,"current_weapon",current_weapon);
+                set_intValue(mysql,profileName,"defence",defence);
+                set_intValue(mysql,profileName,"attack",attack);
+                //set_inventory(mysql,profileName,inventory);
                 for(int i=0; i<size; i++)
                     free(item_name[i]);
                 free(item_name);
@@ -150,16 +150,16 @@ void re_inventory(char *profileName)
     }
 }
 
-void sell(char *profileName)
+void sell(MYSQL *mysql,char *profileName)
 {
-    int size = get_intValue(profileName,"inventory");
+    int size = get_intValue(mysql,profileName,"inventory");
     
     int power[size], cost[size];
     
     int *inventory = (int*)malloc(sizeof(int)*size);
-    get_inventory(profileName,inventory);
-    int current_armor = get_intValue(profileName,"current_armor");
-    int current_weapon = get_intValue(profileName,"current_weapon");
+    get_inventory(mysql,profileName,inventory);
+    int current_armor = get_intValue(mysql,profileName,"current_armor");
+    int current_weapon = get_intValue(mysql,profileName,"current_weapon");
     
     char **item_name = (char**)malloc(size*sizeof(char*));
     for(int i=0; i<size; i++)
@@ -167,9 +167,9 @@ void sell(char *profileName)
     
     get_item_info(inventory,item_name,power,cost,size);
     
-    int gold = get_intValue(profileName,"gold");
-    int defence = get_intValue(profileName,"defence");
-    int attack = get_intValue(profileName,"attack");
+    int gold = get_intValue(mysql,profileName,"gold");
+    int defence = get_intValue(mysql,profileName,"defence");
+    int attack = get_intValue(mysql,profileName,"attack");
 
     int pos=0;
     while(1)
@@ -183,7 +183,7 @@ void sell(char *profileName)
         
         for(int i=0; i<size; i++)
         {
-            printf("%2d%20s\t\t%3d\t%3d",i+1,item_name[i],power[i],cost[i]);
+            printf("%20s\t\t%3d\t%3d",item_name[i],power[i],cost[i]);
             if(i==pos)
             printf("<<<");
             printf("\n");
@@ -218,7 +218,7 @@ void sell(char *profileName)
                         current_weapon = -1;
                         attack -= power[pos];
                     }
-                    gold+=cost[pos];
+                    gold+=cost[pos] - ((cost[pos]*40)/100);
                     inventory[pos]=-1;
                     strcpy(item_name[pos],"empty");
                     power[pos]=0;
@@ -226,12 +226,14 @@ void sell(char *profileName)
                 }
                 break;
             case ESC:
-                set_inventory(profileName,inventory);
-                set_intValue(profileName,"gold",gold);
-                set_intValue(profileName,"current_armor",current_armor);
-                set_intValue(profileName,"current_weapon",current_weapon);
-                set_intValue(profileName,"defence",defence);
-                set_intValue(profileName,"attack",attack);
+
+                set_inventory(mysql,profileName,inventory);
+                set_intValue(mysql,profileName,"gold",gold);
+                set_intValue(mysql,profileName,"current_armor",current_armor);
+                set_intValue(mysql,profileName,"current_weapon",current_weapon);
+                set_intValue(mysql,profileName,"defence",defence);
+                set_intValue(mysql,profileName,"attack",attack);
+
                 for(int i=0; i<size; i++)
                     free(item_name[i]);
                 
@@ -293,7 +295,7 @@ void get_item_info(int* inventory, char** item_name, int* power, int* cost, int 
     free(tname);
 } 
 
-void town(char *profileName)
+void town(MYSQL *mysql,char *profileName)
 {
     int current;
     while(1)
@@ -302,10 +304,10 @@ void town(char *profileName)
         switch(current)
         {
             case 0:
-                shop(profileName);
+                shop(mysql,profileName);
                 break;
             case 1:
-                re_inventory(profileName);
+                re_inventory(mysql,profileName);
                 break;
             case 2:
                 return;
@@ -325,18 +327,18 @@ int town_menu()
     {
         //system("cls");
         system("clear");
-        printf("Welcome to the Huibelburg!\n");
+        printf("Welcome to the Siburg!\n");
         
         switch(select)
         {
             case(0):
-                printf("\n 1.Shop<<<\n 2.Inventory\n 3.Leave the town\n");
+                printf("\nShop<<<\nInventory\nLeave the town\n");
                 break;
             case(1):
-                printf("\n 1.Shop\n 2.Inventory<<<\n 3.Leave the town\n");
+                printf("\nShop\nInventory<<<\nLeave the town\n");
                 break;
             case(2):
-                printf("\n 1.Shop\n 2.Inventory\n 3.Leave the town<<<\n");
+                printf("\nShop\nInventory\nLeave the town<<<\n");
                 break;
             
         }
@@ -368,7 +370,7 @@ int town_menu()
 }
 
 
-void shop(char *profileName)
+void shop(MYSQL *mysql,char *profileName)
 {
     int select=0;
     char button;
@@ -376,7 +378,7 @@ void shop(char *profileName)
     {
         //system("cls");
         system("clear");
-        printf("We are glad to see you in the store Dirty Billy\n");
+        printf("We are glad to see you in the store Dirty Max\n");
         printf("Here are sold the most rare potions from around the city\n");
         printf("Here you can buy excellent armor\n");
         printf("And here you can choose the most impressive items for murders\n");
@@ -385,19 +387,19 @@ void shop(char *profileName)
         switch(select)
         {
             case(0):
-                printf("\n 1. Sell<<<\n 2. Buy potions\n 3. Buy armors\n 4. Buy weapons\n 5. Exit\n");
+                printf("\nSell<<<\nBuy potions\nBuy armors\nBuy weapons\nExit\n");
                 break;
             case(1):
-                printf("\n 1. Sell\n 2. Buy potions<<<\n 3. Buy armors\n 4. Buy weapons\n 5. Exit\n");
+                printf("\nSell\nBuy potions<<<\nBuy armors\nBuy weapons\nExit\n");
                 break;
             case(2):
-                printf("\n 1. Sell\n 2. Buy potions\n 3. Buy armors<<<\n 4. Buy weapons\n 5. Exit\n");
+                printf("\nSell\nBuy potions\nBuy armors<<<\nBuy weapons\nExit\n");
                 break;
             case(3):
-                printf("\n 1. Sell\n 2. Buy potions\n 3. Buy armors\n 4. Buy weapons<<<\n 5. Exit\n");
+                printf("\nSell\nBuy potions\nBuy armors\nBuy weapons<<<\nExit\n");
                 break;
             case(4):
-                printf("\n 1. Sell\n 2. Buy potions\n 3. Buy armors\n 4. Buy weapons\n 5. Exit<<<\n");
+                printf("\nSell\nBuy potions\nBuy armors\nBuy weapons\nExit<<<\n");
                 break;      
         }
         
@@ -421,16 +423,16 @@ void shop(char *profileName)
                 switch(select)
                 {
                     case(0):
-                        sell(profileName);
+                        sell(mysql,profileName);
                         break;
                     case(1):
-                        buy_items(profileName, "potions");
+                        buy_items(mysql,profileName, "potions");
                         break;
                     case(2):
-                        buy_items(profileName, "armors");
+                        buy_items(mysql,profileName, "armors");
                         break;
                     case(3):
-                        buy_items(profileName, "weapons");
+                        buy_items(mysql,profileName, "weapons");
                         break;
                     case(4):
                         return;
@@ -441,18 +443,18 @@ void shop(char *profileName)
     }
 }
 
-void buy_items(char *profileName, char *itemname) //Тут возможна ошибка
+void buy_items(MYSQL *mysql,char *profileName, char *itemname) //Тут возможна ошибка
 {
     //////////////////////////////
     //           DATA           //
     //////////////////////////////
-    int level = get_intValue(profileName,"player_level");
+    int level = get_intValue(mysql,profileName,"player_level");
     
-    int gold = get_intValue(profileName,"gold");
-    int mas_len = get_intValue(profileName,"inventory");
+    int gold = get_intValue(mysql,profileName,"gold");
+    int mas_len = get_intValue(mysql,profileName,"inventory");
     ////////////////////////////////
     int *inventory = (int*)malloc(mas_len*sizeof(int));
-    get_inventory(profileName,inventory);
+    get_inventory(mysql,profileName,inventory);
     char **item_name = (char**)malloc(mas_len*sizeof(char*));
     for(int i=0; i<mas_len; i++)
         item_name[i]=(char*)malloc(32*sizeof(char));
@@ -603,7 +605,7 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
 
         for(int i=0; i<mas_len; i++)
         {
-            printf("%2d.%20s\t%3d\t%3d\n",i+1,item_name[i],power[i],cost[i]);
+            printf("%20s\t%3d\t%3d\n",item_name[i],power[i],cost[i]);
         }
         
         
@@ -637,8 +639,8 @@ void buy_items(char *profileName, char *itemname) //Тут возможна ош
                 }
                 break;
             case(ESC):
-                set_inventory(profileName,inventory);
-                set_intValue(profileName, "gold", gold);
+                set_inventory(mysql,profileName,inventory);
+                set_intValue(mysql,profileName, "gold", gold);
                 for(int i=0; i<d; i++)
                     free(sh_item_name[i]);
                 for(int i=0;i<mas_len;i++)

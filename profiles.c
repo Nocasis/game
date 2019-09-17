@@ -2,9 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
-#define Pcatalog "profiles.txt"
-
 //controls
 
 #define ESC 27
@@ -15,47 +12,45 @@
 #define SPACE 32
 #define ENTER 10
 #define TAB 9
-#define BackSpace 8
+#define BackSpace 127
 
 const int len=32;
-const int attack=10, defence=10, inventory=5, hp=100; //default profile parametrs
+const int attack=12, defence=11, inventory=5, hp=110; //default profile parametrs
 
-char *profile_menu(); //call this (it return current profile_name)
+char *profile_menu(MYSQL *mysql); //call this (it return current profile_name)
 
 //char *name=(char *)malloc(32*sizeof(char));
 //name = profile_menu();
 
-int get_intValue(char *profileName, char *valueName);
-char *get_stringValue(char *profileName, char *valueName);
+int get_intValue(MYSQL *mysql,char *profileName, char *valueName);
+char *get_stringValue(MYSQL *mysql,char *profileName, char *valueName);
 
-void get_inventory(char *profileName, int *inventory);
-void set_inventory(char *profileName, int *inventory);
+void get_inventory(MYSQL *mysql,char *profileName, int *inventory);
+void set_inventory(MYSQL *mysql,char *profileName, int *inventory);
 int empty_slot(int *inventory, int size); //return nearest empty slot
 
-void set_Value(char *profileName, char *valueName, char *value);
-void set_intValue(char *profileName, char *valueName, int value);
+void set_intValue(MYSQL *mysql,char *profileName, char *valueName, int value);
 
 
-int check_profile(char *profile);   //Check profile availabiliy
-void add_profile(char *profile);    //Add profile to directory
-int much_profiles();                //Profiles count
+int check_profile(MYSQL *mysql,char *profile);   //Check profile availabiliy
+//void add_profile(char *profile);    //Add profile to directory
 
-char *new_profile();                 //Create new profile (it return created profile_name)
-char *log_in_menu();                //log in, return current profile
+char *new_profile(MYSQL *mysql);                 //Create new profile (it return created profile_name)
+char *log_in_menu(MYSQL *mysql);                //log in, return current profile
 
 int isCorrect(char sym);
 int user_input(char *string, int size, char *Message);
 
 
-char *profile_menu()
+char *profile_menu(MYSQL *mysql)
 {
     int current=0;
     char button;
     
     while(1)
     {
-        system("cls");
-        //system("clear");
+        //system("cls");
+        system("clear");
         
         if(current==0)
         printf("Log In<<<\nSign Up\n");
@@ -80,73 +75,73 @@ char *profile_menu()
                 break;
             case(ENTER):
                 if(current==0)
-                return log_in_menu();
+                return log_in_menu(mysql);
                 else
-                return new_profile();
-                break;
+                return new_profile(mysql);
         }
         
     }
     
 }
 
-char *log_in_menu()
+char *log_in_menu(MYSQL *mysql)
 {
-    char *name, *password, *temp;
+    char *name, *password, *temp,*req;
+    MYSQL_ROW row;
     name=(char *)malloc(len*sizeof(char));
     password=(char *)malloc(len*sizeof(char));
     temp=(char *)malloc(len*sizeof(char));
-    char format[5]=".txt";
-    
-    FILE *profile = fopen(Pcatalog,"r");
-    if(profile==NULL)
-    {
-        system("cls");
-        //system("clear");
-        printf("data is not found, create new profile\n");
-        getch();
-        return new_profile();
-    }
-    
+    req=(char *)malloc(80*sizeof(char));
+    MYSQL_RES *result;
+
+
     while(1)
     {
-        fseek(profile,0,SEEK_SET);
-        system("cls");
-        //system("clear");
-        
+        system("clear");
 
-        user_input(name,len-5,"Enter your profilename");//input profilename
-        strcat(name,format);
+        user_input(name,len,"Enter your profilename");//input profilename
         
-        user_input(password,len-5,"Enter your password");//input password  
-        
-        while(!feof(profile))
+        user_input(password,len,"Enter your password");//input password
+        //printf("\nname %s pswd %s,temp %s",name,password,temp);
+        //getch();
+
+
+        sprintf(req,"SELECT EXISTS(SELECT name FROM user_profile WHERE name=\"%s\")",name);
+        if(mysql_query(mysql,req))
+            exit(1);
+        result = mysql_store_result(mysql);
+        row = mysql_fetch_row(result);
+        mysql_free_result(result);
+        strcpy(temp,row[0]);
+
+        if(atoi(temp))
         {
-            fscanf(profile,"%s",temp);
-            if(strcmp(name,temp)==0)
-            {
-                temp=get_stringValue(name, "password");
+                sprintf(req,"SELECT password from user_profile where name=\"%s\"",name);
+                if(mysql_query(mysql,req))
+                    exit(1);
+                result = mysql_store_result(mysql);
+                row = mysql_fetch_row(result);
+                strcpy(temp,row[0]);
+                mysql_free_result(result);
                 if(strcmp(password,temp)==0)
                 {
                     free (password);
                     free(temp);
-                    fclose(profile);
                     return name;
-                }               
-            }
+                }
         }
-        
-        printf("\nIncorrect login or passwrod\n");
-        getch();        
+
+        printf("\nIncorrect login or password\n");
+        getch();
     }
     
 }
 
-char *new_profile()
+char *new_profile(MYSQL *mysql)
 {
     //char name[len], format[5]=".txt";
     char *name=(char *)malloc(len*sizeof(char));
-    char format[5]=".txt";
+    //char format[5]=".txt";
     char name1 [32];
     int i;
     while(1)
@@ -154,42 +149,47 @@ char *new_profile()
         //system("cls");
         system("clear");
         
-        user_input(name,len-5,"Enter your profilename");//input profilename
-        strcat(name,format);
+        user_input(name,len,"Enter your profilename");//input profilename
+        //strcat(name,format);
         
-        if(check_profile(name))
+        if(check_profile(mysql,name))
         {
             char *password;
+            char *tmp;
+            tmp=(char *)malloc(400*sizeof(char));
             password=(char *)malloc(len*sizeof(char));
-            system("cls");
-            //system("clear");
+            //system("cls");
+            system("clear");
             
-            user_input(password,len-5,"Enter your password");//input password
-            
-            add_profile(name);
-            FILE * new_profile = fopen(name,"w");
-            fprintf(new_profile,"password %s\n",password);
-            fprintf(new_profile,"map_level 1\n");
-            fprintf(new_profile,"player_level 1\n");
-            fprintf(new_profile,"attack %d\n",attack);
-            fprintf(new_profile,"defence %d\n",defence);
-            fprintf(new_profile,"skill_points 0\n");
-            
-            fprintf(new_profile,"inventory %d\n",inventory);
-            for(i=0; i<inventory; i++)
-            fprintf(new_profile,"-1 ");
-            fprintf(new_profile,"\n");
-            
-            fprintf(new_profile,"current_armor -1\n");
-            fprintf(new_profile,"current_weapon -1\n");
-            
-            fprintf(new_profile,"experience 0\n");
-            fprintf(new_profile,"gold 0\n");
-            fprintf(new_profile,"hp %d\n",hp);
-            
-            
+            user_input(password,len,"Enter your password");//input password
+            //printf("--\n%s--%s--%d--%d--%d--\n",name,password,attack,defence,inventory);
+            //getch();		
+            //add_profile(name);
+
+            sprintf(tmp,"INSERT INTO user_profile ("
+                    "name,"
+                    "password,"
+                    "map_level,"
+                    "player_level,"
+                    "attack,"
+                    "defence,"
+                    "skill_points,"
+                    "inventory,"
+                    "inventory_slot_1,"
+                    "inventory_slot_2,"
+                    "inventory_slot_3,"
+                    "inventory_slot_4,"
+                    "inventory_slot_5,"
+                    "current_armor,"
+                    "current_weapon,"
+                    "experience,"
+                    "gold,"
+                    "hp) VALUES (\"%s\",\"%s\",%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)",name,password,1,1,attack,defence,0,inventory,-1,-1,-1,-1,-1,-1,-1,0,0,hp);
+            if(mysql_query(mysql,tmp))
+                exit(1);
+            getch();
+            free(tmp);
             free(password);
-            fclose(new_profile);
             return name;
                                  
         }
@@ -204,329 +204,137 @@ char *new_profile()
     
 }
 
-int check_profile(char *profile)
+int check_profile(MYSQL *mysql,char *profile)
 {
+    char *name, *password, *temp,*req;
+    MYSQL_ROW row;
+    temp=(char *)malloc(len*sizeof(char));
+    req=(char *)malloc(100*sizeof(char));
+    MYSQL_RES *result;
 
-    FILE *catalog = fopen(Pcatalog,"r");
-    char getName[64];
-    if(catalog==NULL) //if there is no file
-    {
-        fopen(Pcatalog,"w");  //create it
-        return 1;                   //return 1 because the catalog is empty
-    }
-
-    do
-    {     
-        fscanf(catalog,"%s", getName);     
-        if(strcmp(getName,profile)==0)
-        {
-            fclose(catalog);
-            return 0;
-        }
-    }while(!feof(catalog));
-    
-    fclose(catalog);
+    sprintf(req,"SELECT EXISTS(SELECT name FROM user_profile WHERE name=\"%s\")",profile);
+    if(mysql_query(mysql,req))
+        exit(1);
+    result = mysql_store_result(mysql);
+    row = mysql_fetch_row(result);
+    mysql_free_result(result);
+    strcpy(temp,row[0]);
+    if(atoi(temp))
+        return 0;
     return 1;        
 }
 
-//add profile in catalog
-void add_profile(char *profile)
-{
-    FILE *catalog = fopen(Pcatalog,"a");
-    fprintf(catalog,"%s \n",profile);
-    fclose(catalog);
-}
 
-int much_profiles()
-{
-    int count=0;
-    FILE *catalog;
-    char string[30];
-    catalog = fopen(Pcatalog, "r");
-    
-    if(catalog==NULL)
-    return 0; //there are no profiles
+//Р—РђР’РўР Рђ РІРµР·РґРµ РЅРёР¶Рµ РґРѕР±Р°РІРёС‚СЊ mysql
 
-    while(fscanf(catalog,"%s",string)!=EOF)
-        count++;
-    fclose(catalog);
-    return count;
-}
-
-
-int get_intValue(char *profileName, char *valueName)
+int get_intValue(MYSQL *mysql,char *profileName, char *valueName)
 {
     int result;
-    char *currentValueName = (char *)malloc(len*sizeof(char));
-    FILE *config =fopen(profileName,"r");
-    if (config==NULL)
-    {
-        system("clear");
-        //system("cls");
-        printf("incorect profileName\n");
-        getch();
-        return 0;//incorect profileName
-    }
-    
-    while (!feof(config))
-    {
-        fscanf(config,"%s", currentValueName);
-        fscanf(config,"%d", &result);
-        if(strcmp(currentValueName,valueName)==0)
-        {
-            fclose(config);
-            return result;
-        }                    
-    }
-    
-    printf("incorect valueName\n");
-    getch();
-    fclose(config);
-    return 0;
-    
+    char *req = (char *)malloc(80*sizeof(char));
+    char *tmp = (char *)malloc(len*sizeof(char));
+    MYSQL_ROW row;
+    MYSQL_RES *mysql_result;
+    sprintf(req,"SELECT %s FROM user_profile WHERE name=\"%s\"",valueName,profileName);
+    if(mysql_query(mysql,req))
+        exit(1);
+    mysql_result = mysql_store_result(mysql);
+    row = mysql_fetch_row(mysql_result);
+    strcpy(tmp,row[0]);
+    result = atoi(tmp);
+    mysql_free_result(mysql_result);
+    free(req);
+    free(tmp);
+    return result;
 }
 
-char *get_stringValue(char *profileName, char *valueName)
+char *get_stringValue(MYSQL *mysql,char *profileName, char *valueName)
 {
     char *result = (char *)malloc(len*sizeof(char));
-    char *currentValueName = (char *)malloc(len*sizeof(char));
-    FILE *config =fopen(profileName,"r");
-    if (config==NULL)
-    return "\0";//incorect profileName
-    
-    while (!feof(config))
-    {
-        fscanf(config,"%s", currentValueName);
-        fscanf(config,"%s", result);
-        if(strcmp(currentValueName,valueName)==0)
-        {
-            fclose(config);
-            return result;
-        }                    
-    }
-    fclose(config);
-    return "\0"; //incorect valueName        
+    char *req = (char *)malloc(80*sizeof(char));
+    char *tmp = (char *)malloc(len*sizeof(char));
+    MYSQL_ROW row;
+    MYSQL_RES *mysql_result;
+    sprintf(req,"SELECT %s FROM user_profile WHERE name=\"%s\"",valueName,profileName);
+    if(mysql_query(mysql,req))
+        exit(1);
+    mysql_result = mysql_store_result(mysql);
+    row = mysql_fetch_row(mysql_result);
+    strcpy(result,row[0]);
+    mysql_free_result(mysql_result);
+    free(req);
+    free(tmp);
+    free(result);
+    return result;
+
 }
 
-void get_inventory(char *profileName, int *inventory)
+void get_inventory(MYSQL *mysql,char *profileName, int *inventory)
 {
     int size;
-    char *currentValueName = (char *)malloc(len*sizeof(char));
-    FILE *config =fopen(profileName,"r");
-    if (config==NULL)
+    char *req = (char *)malloc(90*sizeof(char));
+    char *tmp = (char *)malloc(len*sizeof(char));
+    MYSQL_ROW row;
+    MYSQL_RES *mysql_result;
+    sprintf(req,"SELECT inventory FROM user_profile WHERE name=\"%s\"",profileName);
+    if(mysql_query(mysql,req))
+        exit(1);
+    mysql_result = mysql_store_result(mysql);
+    row = mysql_fetch_row(mysql_result);
+    strcpy(tmp,row[0]);
+    size = atoi(tmp);
+    mysql_free_result(mysql_result);
+    for(int i = 0,j = 1; i < size; i++,j++)
     {
-        system("clear");
-        //system("cls");
-        printf("incorect profileName\n");
-        getch();
-        return;//incorect profileName
+        sprintf(req,"SELECT inventory_slot_%d FROM user_profile WHERE name=\"%s\"",j,profileName);
+        if(mysql_query(mysql,req))
+            exit(1);
+        mysql_result = mysql_store_result(mysql);
+        row = mysql_fetch_row(mysql_result);
+        strcpy(tmp,row[0]);
+        inventory[i] = atoi(tmp);
     }
-    while (!feof(config)) //С‚СѓС‚ РІС‹Р»РµС‚
-    {
+    mysql_free_result(mysql_result);
+    free(req);
+    free(tmp);
+    return;
 
-        fscanf(config,"%s", currentValueName);
-        if(strcmp(currentValueName,"inventory")==0)
-        {
-            fscanf(config,"%d", &size);
-            for(int i=0; i<size; i++)
-            fscanf(config,"%d", &inventory[i]);
-            return;            
-        }
-    }
-    fclose(config);    
 }
 
-void set_Value(char *profileName, char *valueName, char *value)
+
+void set_intValue(MYSQL *mysql,char *profileName, char *valueName, int value)
 {
-    FILE *prim =fopen(profileName,"r");
-    FILE *temp =fopen("system_temp.txt","w");
-    char *string = (char*)malloc(len*sizeof(char));
-    int itemp;
-    
-    fscanf(prim,"%s", string);//"password"
-    if(strcmp(string,valueName)==0)
-    {
-        fprintf(temp,"password %s\n",value);//print new value
-        fscanf(prim,"%s", string);//old-value
-    }
-    else
-    {    
-        fscanf(prim,"%s", string);//value
-        fprintf(temp,"password %s\n",string);
-    }
-    
-    for(int i=0; i<11; i++)
-    {
-        fscanf(prim,"%s", string);
-        fscanf(prim,"%d", &itemp);
-        
-        if(strcmp(string,valueName)==0)
-        fprintf(temp,"%s %d\n",string,value);
-        else
-        fprintf(temp,"%s %d\n",string,itemp);
-        
-        if(strcmp(string,"inventory")==0)
-        {
-            for(int j=0; j<itemp; j++)
-            {
-                int mas;
-                fscanf(prim,"%d", &mas);
-                fprintf(temp,"%d ",mas);
-            }
-            fprintf(temp,"\n");
-        }
-        
-    }
-    freopen(profileName,"w",prim);
-    freopen("system_temp.txt","r",temp);
-    
-    fscanf(temp,"%s", string);//"password"
-    fscanf(temp,"%s", string);//value
-    fprintf(prim,"password %s\n",string);
-    
-    for(int i=0; i<11; i++)
-    {
-        fscanf(temp,"%s", string);
-        fscanf(temp,"%d", &itemp);
-        
-        fprintf(prim,"%s %d\n",string,itemp);
-        
-        if(strcmp(string,"inventory")==0)
-        {
-            for(int j=0; j<itemp; j++)
-            {
-                int mas;
-                fscanf(temp,"%d", &mas);
-                fprintf(prim,"%d ",mas);
-            }
-            fprintf(prim,"\n");
-        }
-        
-    }
-    free(string);
-    fclose(prim);
-    fclose(temp);
-    
+    char *req = (char *)malloc(100*sizeof(char));
+    sprintf(req,"UPDATE user_profile SET %s=%d WHERE name=\"%s\"",valueName,value,profileName);
+    if(mysql_query(mysql,req))
+        exit(1);
+    free(req);
+    return;
 }
 
-void set_intValue(char *profileName, char *valueName, int value) //РўСѓС‚ РІРѕР·РјРѕР¶РЅР° РѕС€РёР±РєР°---РЅРµС‚ С‚СѓС‚ РѕС€РёР±РєРё
+void set_inventory(MYSQL *mysql,char *profileName, int *inventory)
 {
-    FILE *prim =fopen(profileName,"r");
-    FILE *temp =fopen("system_temp.txt","w");
-    char *string = (char*)malloc(len*sizeof(char));
-    int itemp;
-    
-    fscanf(prim,"%s", string);//"password"
-    fscanf(prim,"%s", string);//value
-    fprintf(temp,"password %s\n",string);
-    for(int i=0; i<11; i++)
+    int size;
+    char *req = (char *)malloc(90*sizeof(char));
+    char *tmp = (char *)malloc(len*sizeof(char));
+    MYSQL_ROW row;
+    MYSQL_RES *mysql_result;
+    sprintf(req,"SELECT inventory FROM user_profile WHERE name=\"%s\"",profileName);
+    if(mysql_query(mysql,req))
+        exit(1);
+    mysql_result = mysql_store_result(mysql);
+    row = mysql_fetch_row(mysql_result);
+    strcpy(tmp,row[0]);
+    size = atoi(tmp);
+    mysql_free_result(mysql_result);
+    for(int i = 0,j = 1;i < size; i++,j++)
     {
-        fscanf(prim,"%s", string);
-        fscanf(prim,"%d", &itemp);
-        
-        if(strcmp(string,valueName)==0)
-        fprintf(temp,"%s %d\n",string,value);
-        else
-        fprintf(temp,"%s %d\n",string,itemp);
-        
-        if(strcmp(string,"inventory")==0)
-        {
-            for(int j=0; j<itemp; j++)
-            {
-                int mas;
-                fscanf(prim,"%d", &mas);
-                fprintf(temp,"%d ",mas);
-            }
-            fprintf(temp,"\n");
-        }
-        
+        sprintf(req,"UPDATE user_profile SET inventory_slot_%d=%d WHERE name=\"%s\"",j,inventory[i],profileName);
+        if(mysql_query(mysql,req))
+            exit(1);
     }
-    freopen(profileName,"w",prim);
-    freopen("system_temp.txt","r",temp);
-    fscanf(temp,"%s", string);//"password"
-    fscanf(temp,"%s", string);//value
-    fprintf(prim,"password %s\n",string);
-    
-    for(int i=0; i<11; i++)
-    {
-        fscanf(temp,"%s", string);
-        fscanf(temp,"%d", &itemp);
-        
-        fprintf(prim,"%s %d\n",string,itemp);
-        
-        if(strcmp(string,"inventory")==0)
-        {
-            for(int j=0; j<itemp; j++)
-            {
-                int mas;
-                fscanf(temp,"%d", &mas);
-                fprintf(prim,"%d ",mas);
-            }
-            fprintf(prim,"\n");
-        }
-        
-    }
-    free(string);
-    fclose(prim);
-    fclose(temp);
-}
-
-void set_inventory(char *profileName, int *inventory) //РўСѓС‚ РІРѕР·РјРѕР¶РЅРѕ РѕС€РёР±РєР°, РІС‹Р»РµС‚РѕРІ СЃ armor Рё def, С‡РёСЃС‚Рѕ РґР»СЏ potion
-{
-    FILE *prim =fopen(profileName,"r");
-    FILE *temp =fopen("system_temp.txt","w");
-    char *string = (char*)malloc(len*sizeof(char));
-    int itemp;
-    
-    fscanf(prim,"%s", string);//"password"
-    fscanf(prim,"%s", string);//value
-    fprintf(temp,"password %s\n",string);
-    
-    for(int i=0; i<11; i++)
-    {
-        fscanf(prim,"%s", string);
-        fscanf(prim,"%d", &itemp);
-        fprintf(temp,"%s %d\n",string,itemp);
-        
-        if(strcmp(string,"inventory")==0)
-        {
-            for(int j=0; j<itemp; j++)
-            {
-                int mas;
-                fscanf(prim, "%d",&mas);
-                fprintf(temp,"%d ",inventory[j]);
-            }
-            
-            fprintf(temp,"\n");
-        }
-    }
-    freopen(profileName,"w",prim);
-    freopen("system_temp.txt","r",temp);
-    fscanf(temp,"%s", string);//"password"
-    fscanf(temp,"%s", string);//value
-    fprintf(prim,"password %s\n",string);
-    for(int i=0; i<11; i++)
-    {
-        fscanf(temp,"%s", string);
-        fscanf(temp,"%d", &itemp);
-        
-        fprintf(prim,"%s %d\n",string,itemp);
-        
-        if(strcmp(string,"inventory")==0)
-        {
-            for(int j=0; j<itemp; j++)
-            {
-                int mas;
-                fscanf(temp,"%d", &mas);
-                fprintf(prim,"%d ",mas);
-            }
-            fprintf(prim,"\n");
-        }
-        
-    }
-    free(string);
-    fclose(prim);
-    fclose(temp);
+    free(req);
+    free(tmp);
+    return;
 }
 
 int empty_slot(int *inventory, int size)
@@ -556,32 +364,26 @@ int user_input(char *string, int size, char *Message)
     
     while(1)
     {
-        system("cls");
-        //system("clear");
+        system("clear");
         printf("%s\n",Message);
         for(int i=0; i<count; i++)
         printf("%c",string[i]);
-        //printf("*");
         
         button = getch();
         switch(button)
         {
-            /*case(ESC):
-                strcpy(string,"");
-                return 0;//отмена ввода
-                break;*/
             case(ENTER):
                 if(count>2)
-                    return 1;//ввод корректно завршен
+                    return 1;
                 else
                     printf("\nToo short\n");
                     getch();
                 break;
-            case(BackSpace)://удалить крайний правый символ
+            case(BackSpace):
                 count--;
                 string[count]='\0';
                 break;
-            default://добавить корректный символ
+            default:
                 if(isCorrect(button))
                 {
                     if(count<size-1)
@@ -606,3 +408,4 @@ int user_input(char *string, int size, char *Message)
     }
     return 1;
 }
+

@@ -29,9 +29,16 @@ void print_map(int **Map,int i,int j,int GGxy[2]);
 void Selected(int level,char *map_name)
 {
     FILE *file_map;
+    char *dir = (char*)malloc(5*sizeof(char));// "maps/";
+    char * temp= (char*)malloc(35*sizeof(char));
+    strcpy(dir,"maps/");
+    temp = (char*)malloc(35*sizeof(char));
     file_map=fopen("catalog.txt","r");
     for(int i=0;i<level;i++)  //Тут нужно бдует исправить
         fscanf(file_map,"%s",map_name);
+    strcpy(temp,map_name);
+    strcpy(map_name,dir);
+    strcat(map_name,temp);
     fclose(file_map);
 }
 
@@ -99,10 +106,10 @@ int EXIT()
         switch(a)
         {
             case 1:
-                printf("Do you want to leave?\n1.Yes<<<\n2.No\n");
+                printf("Do you want to leave?\nYes<<<\nNo\n");
                 break;
             case 0:
-                printf("Do you want to leave?\n1.Yes\n2.No<<<\n");
+                printf("Do you want to leave?\nYes\nNo<<<\n");
                 break;
         }
         temp=getch();
@@ -124,7 +131,7 @@ int EXIT()
     }
 }
 
-void level_up(char *profile_name,int GG[3],int *skill_points)
+void level_up(MYSQL *mysql,char *profile_name,int GG[3],int *skill_points)
 {
     int temp,a=3;
     system("clear");
@@ -163,7 +170,7 @@ void level_up(char *profile_name,int GG[3],int *skill_points)
                 switch(a)
                 {
                     case 3:
-                        set_intValue(profile_name,"hp",GG[0]+30);
+                        set_intValue(mysql,profile_name,"hp",GG[0]+30);
                         break;
                     case 2:
                         GG[1]+=2;
@@ -180,22 +187,22 @@ void level_up(char *profile_name,int GG[3],int *skill_points)
 
 }
 
-void loot(char *profile_name,int *exp,int *gold,int *profile_level,int GG[3],int *skill_points)
+void loot(MYSQL *mysql,char *profile_name,int *exp,int *gold,int *profile_level,int GG[3],int *skill_points)
 {
-    *exp+=15+(rand()%20);
-    *gold+=20+(rand()%10)*(*profile_level);
+    *exp+=5+(rand()%18);
+    *gold+=10+(rand()%10)*(*profile_level);
     if(*exp>=100)
     {
         *exp%=100;
         *profile_level+=1;
-        GG[0]=get_intValue(profile_name,"hp");
-        level_up(profile_name,GG,skill_points);
-        GG[0]=get_intValue(profile_name,"hp");
+        GG[0]=get_intValue(mysql,profile_name,"hp");
+        level_up(mysql,profile_name,GG,skill_points);
+        GG[0]=get_intValue(mysql,profile_name,"hp");
     }
 }
 
 
-int play(int level,char *profile_name)
+int play(MYSQL *mysql,int level,char *profile_name)
 {
     FILE *map;
     int i,j,x,y;
@@ -207,17 +214,17 @@ int play(int level,char *profile_name)
     int temp;
 
 
-    int gold=get_intValue(profile_name,"gold");
-    int experience=get_intValue(profile_name,"experience");
-    int profile_level=get_intValue(profile_name,"player_level");
-    int skill_points=get_intValue(profile_name,"skill_points");
-    int map_level=get_intValue(profile_name,"map_level");
-    GG[0]=get_intValue(profile_name,"hp");
-    GG[1]=get_intValue(profile_name,"attack");
-    GG[2]=get_intValue(profile_name,"defence");
+    int gold=get_intValue(mysql,profile_name,"gold");
+    int experience=get_intValue(mysql,profile_name,"experience");
+    int profile_level=get_intValue(mysql,profile_name,"player_level");
+    int skill_points=get_intValue(mysql,profile_name,"skill_points");
+    int map_level=get_intValue(mysql,profile_name,"map_level");
+    GG[0]=get_intValue(mysql,profile_name,"hp");
+    GG[1]=get_intValue(mysql,profile_name,"attack");
+    GG[2]=get_intValue(mysql,profile_name,"defence");
 
 
-    level_name=(char*)malloc(30*sizeof(char));
+    level_name=(char*)malloc(35*sizeof(char));
     Selected(level,level_name);
     map=fopen(level_name,"r");
     free(level_name);
@@ -264,12 +271,12 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name,profile_level,&skill_points);
+                        exit=fight(mysql,GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[0]--;
                             Map[GGxy[0]][GGxy[1]]=empty;
-                            loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);
+                            loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);
                         }
                         if(exit==2)
                             return 0;
@@ -277,16 +284,16 @@ int play(int level,char *profile_name)
                     case coins:
                         GGxy[0]--;
                         Map[GGxy[0]][GGxy[1]]=empty;
-                        loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);//Here i should add skill_points
+                        loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);//Here i should add skill_points
                         break;
                     case finish:
-                        set_intValue(profile_name,"gold",gold);
-                        set_intValue(profile_name,"experience",experience);
-                        set_intValue(profile_name,"player_level",profile_level);
-                        set_intValue(profile_name,"skill_points",skill_points);
-                        set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"attack",GG[1]);
-                        set_intValue(profile_name,"defence",GG[2]);
+                        set_intValue(mysql,profile_name,"gold",gold);
+                        set_intValue(mysql,profile_name,"experience",experience);
+                        set_intValue(mysql,profile_name,"player_level",profile_level);
+                        set_intValue(mysql,profile_name,"skill_points",skill_points);
+                        set_intValue(mysql,profile_name,"map_level",map_level+1);
+                        set_intValue(mysql,profile_name,"attack",GG[1]);
+                        set_intValue(mysql,profile_name,"defence",GG[2]);
                         return 1;
                 }
                 break;
@@ -303,12 +310,12 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name,profile_level,&skill_points);
+                        exit=fight(mysql,GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[0]++;
                             Map[GGxy[0]][GGxy[1]]=empty;
-                            loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);
+                            loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);
                         }
                         if(exit==2)
                             return 0;
@@ -316,16 +323,16 @@ int play(int level,char *profile_name)
                     case coins:
                         GGxy[0]++;
                         Map[GGxy[0]][GGxy[1]]=empty;
-                        loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);
+                        loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);
                         break;//Тут добавить лут чего-либо
                     case finish:
-                        set_intValue(profile_name,"gold",gold);
-                        set_intValue(profile_name,"experience",experience);
-                        set_intValue(profile_name,"player_level",profile_level);
-                        set_intValue(profile_name,"skill_points",skill_points);
-                        set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"attack",GG[1]);
-                        set_intValue(profile_name,"defence",GG[2]);
+                        set_intValue(mysql,profile_name,"gold",gold);
+                        set_intValue(mysql,profile_name,"experience",experience);
+                        set_intValue(mysql,profile_name,"player_level",profile_level);
+                        set_intValue(mysql,profile_name,"skill_points",skill_points);
+                        set_intValue(mysql,profile_name,"map_level",map_level+1);
+                        set_intValue(mysql,profile_name,"attack",GG[1]);
+                        set_intValue(mysql,profile_name,"defence",GG[2]);
                         return 1;
                 }
                 break;
@@ -342,12 +349,12 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name,profile_level,&skill_points);
+                        exit=fight(mysql,GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[1]--;
                             Map[GGxy[0]][GGxy[1]]=empty;
-                            loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);
+                            loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);
                         }
                         if(exit==2)
                             return 0;
@@ -355,16 +362,16 @@ int play(int level,char *profile_name)
                     case coins:
                         GGxy[1]--;
                         Map[GGxy[0]][GGxy[1]]=empty;
-                        loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);
+                        loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);
                         break;//Тут добавить лут чего-либо
                     case finish:
-                        set_intValue(profile_name,"gold",gold);
-                        set_intValue(profile_name,"experience",experience);
-                        set_intValue(profile_name,"player_level",profile_level);
-                        set_intValue(profile_name,"skill_points",skill_points);
-                        set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"attack",GG[1]);
-                        set_intValue(profile_name,"defence",GG[2]);
+                        set_intValue(mysql,profile_name,"gold",gold);
+                        set_intValue(mysql,profile_name,"experience",experience);
+                        set_intValue(mysql,profile_name,"player_level",profile_level);
+                        set_intValue(mysql,profile_name,"skill_points",skill_points);
+                        set_intValue(mysql,profile_name,"map_level",map_level+1);
+                        set_intValue(mysql,profile_name,"attack",GG[1]);
+                        set_intValue(mysql,profile_name,"defence",GG[2]);
                         return 1;
                 }
                 break;
@@ -381,12 +388,12 @@ int play(int level,char *profile_name)
                         break;
                     case enemy:
                         system("clear");
-                        exit=fight(GG,profile_name,profile_level,&skill_points);
+                        exit=fight(mysql,GG,profile_name,profile_level,&skill_points);
                         if(exit==0)
                         {
                             GGxy[1]++;
                             Map[GGxy[0]][GGxy[1]]=empty;
-                            loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);
+                            loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);
                         }
                         if(exit==2)
                             return 0;
@@ -394,16 +401,16 @@ int play(int level,char *profile_name)
                     case coins:
                         GGxy[1]++;
                         Map[GGxy[0]][GGxy[1]]=empty;
-                        loot(profile_name,&experience,&gold,&profile_level,GG,&skill_points);
+                        loot(mysql,profile_name,&experience,&gold,&profile_level,GG,&skill_points);
                         break;//Тут добавить лут чего-либо
                     case finish:
-                        set_intValue(profile_name,"gold",gold);
-                        set_intValue(profile_name,"experience",experience);
-                        set_intValue(profile_name,"player_level",profile_level);
-                        set_intValue(profile_name,"skill_points",skill_points);
-                        set_intValue(profile_name,"map_level",map_level+1);
-                        set_intValue(profile_name,"attack",GG[1]);
-                        set_intValue(profile_name,"defence",GG[2]);
+                        set_intValue(mysql,profile_name,"gold",gold);
+                        set_intValue(mysql,profile_name,"experience",experience);
+                        set_intValue(mysql,profile_name,"player_level",profile_level);
+                        set_intValue(mysql,profile_name,"skill_points",skill_points);
+                        set_intValue(mysql,profile_name,"map_level",map_level+1);
+                        set_intValue(mysql,profile_name,"attack",GG[1]);
+                        set_intValue(mysql,profile_name,"defence",GG[2]);
                         return 1;
                 }
                 break;

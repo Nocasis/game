@@ -21,21 +21,21 @@ void random_enemy(int profile_level,int NPC[3],char name_npc[32])
     {
         case 0:
             strcpy(name_npc,"Zloy Golub'");
-            NPC[0]=45+0.5*(rand()%10)*profile_level;
-            NPC[1]=20+0.5*(rand()%8)*profile_level;
-            NPC[2]=5+0.5*(rand()%6)*profile_level;
+            NPC[0]=45+0.5*(rand()%10)*(profile_level/2);
+            NPC[1]=16+0.5*(rand()%8)*(profile_level/2);
+            NPC[2]=5+0.5*(rand()%6)*(profile_level/2);
             return;
         case 1:
-            strcpy(name_npc,"Zombie-Navalny");
-            NPC[0]=100+0.5*(rand()%30)*profile_level;
-            NPC[1]=10+0.5*(rand()%3)*profile_level;
-            NPC[2]=5+0.5*(rand()%6)*profile_level;
+            strcpy(name_npc,"Zombie-Max");
+            NPC[0]=115+0.5*(rand()%30)*(profile_level/2);
+            NPC[1]=10+0.5*(rand()%3)*(profile_level/2);
+            NPC[2]=5+0.5*(rand()%6)*(profile_level/2);
             return;
         case 2:
             strcpy(name_npc,"Ghost");
-            NPC[0]=45+0.5*(rand()%20)*profile_level;
-            NPC[1]=15+0.5*(rand()%4)*profile_level;
-            NPC[2]=15+0.5*(rand()%6)*profile_level;
+            NPC[0]=45+0.5*(rand()%20)*(profile_level/2);
+            NPC[1]=12+0.5*(rand()%4)*(profile_level/2);
+            NPC[2]=10+0.5*(rand()%6)*(profile_level/2);
             return;
     }
 }
@@ -69,22 +69,23 @@ void print_window(int a,int GG[3],int NPC[3],char name_npc[32]) // Here we shoul
     switch(a)
             {
                 case 0:
-                    printf("\n1.Hit<<<\n2.Hard blow\n3.Careful blow\n4.Book of skills\n5.Inventory\n6.Escape\n");
+                    printf("\nHit<<<\nHard blow\nCareful blow\nBook of skills\nInventory\nEscape\n");
                     break;
                 case 1:
-                    printf("\n1.Hit\n2.Hard blow<<<\n3.Careful blow\n4.Book of skills\n5.Inventory\n6.Escape\n");
+                    printf("\nHit\nHard blow<<<\nCareful blow\nBook of skills\nInventory\nEscape\n");
                     break;
                 case 2:
-                    printf("\n1.Hit\n2.Hard blow\n3.Careful blow<<<\n4.Book of skills\n5.Inventory\n6.Escape\n");
+                    printf("\nHit\nHard blow\nCareful blow<<<\nBook of skills\nInventory\nEscape\n");
                     break;
                 case 3:
-                    printf("\n1.Hit\n2.Hard blow\n3.Careful blow\n4.Book of skills<<<\n5.Inventory\n6.Escape\n");
+                    printf("\nHit\nHard blow\nCareful blow\nBook of skills<<<\nInventory\nEscape\n");
                     break;
                 case 4:
-                    printf("\n1.Hit\n2.Hard blow\n3.Careful blow\n4.Book of skills\n5.Inventory<<<\n6.Escape\n");
+                    printf("\nHit\nHard blow\nCareful blow\nBook of skills\nInventory<<<\nEscape\n");
                     break;
                 case 5:
-                    printf("\n1.Hit\n2.Hard blow\n3.Careful blow\n4.Book of skills\n5.Inventory\n6.Escape<<<\n");
+                    printf("\nHit\nHard blow\nCareful blow\nBook of skills\nInventory\nEscape<<<\n");
+                    break;
             }
 }
 
@@ -116,23 +117,23 @@ void print_fight_window(int a,int GG[3],int NPC[3],char name_npc[32],int *skill_
     for(int i=0;i<23;i++)
         printf("%c",61);
     printf("%c",124);
-    printf("\nYou have %d skill points.",*skill_points);
+    printf("\nYou have %d skill points.",*skill_points); // Не листается почему то
     switch(a)
     {
         case 0:
-            printf("\n1.Hit1<<<\n2.Hit2\n3.Hit3\n4.Hit4\n5.Quick legs\n");
+            printf("\nTriple hit<<<\nVampire\nBlood Magick\nMax's Punch\nQuick legs\n\nYou hit enemy on x3 damage.Cost 6 skill points");
             break;
         case 1:
-            printf("\n1.Hit1\n2.Hit2<<<\n3.Hit3\n4.Hit4\n5.Quick legs\n");
+            printf("\nTriple hit\nVampire<<<\nBlood Magick\nMax's Punch\nQuick legs\n\nPart of your damage heals you.Cost 4 skill points.");
             break;
         case 2:
-            printf("\n1.Hit1\n2.Hit2\n3.Hit3<<<\n4.Hit4\n5.Quick legs\n");
+            printf("\nTriple hit\nVampire\nBlood Magick<<<\nMax's Punch\nQuick legs\n\nGain 1 skill point and deal 10 damage to enemy.Cost 20 hp.");
             break;
         case 3:
-            printf("\n1.Hit1\n2.Hit2\n3.Hit3\n4.Hit4<<<\n5.Quick legs\n");
+            printf("\nTriple hit\nVampire\nBlood Magick\nMax's Punch<<<\nQuick legs\n\nYou just kill the enemy.Cost 10 skill points.");
             break;
         case 4:
-            printf("\n1.Hit1\n2.Hit2\n3.Hit3\n4.Hit4\n5.Quick legs<<<\n\n100 Chance to escape! Cost 2 skill points.");
+            printf("\nTriple hit\nVampire\nBlood Magick\nMax's Punch\nQuick legs<<<\n\nChance to escape! Cost 2 skill points.");
     }
 }
 
@@ -177,7 +178,7 @@ void Hit(int GG[3],int NPC[3])
     if(D2NPC>0)
     {
         NPC[0]-=D2NPC;
-        printf("You hitted enemy on %d hp.\n",D2NPC);
+        printf("\nYou hitted enemy on %d hp.\n",D2NPC);
     }
     else
         printf("Enemy block your hit\n");
@@ -189,6 +190,126 @@ void Hit(int GG[3],int NPC[3])
     }
     else
         printf("You block enemys hit\n");
+}
+
+void blood_magick(int GG[3],int NPC[3],int *skill_points)
+{
+    int D2NPC,D2GG;
+
+        D2NPC = 10;
+        D2GG = 20;
+        if (D2NPC > 0)
+        {
+            NPC[0] -= D2NPC;
+            printf("\nYou hitted enemy on %d hp.\n", D2NPC);
+        }
+        if (D2GG > 0)
+        {
+            GG[0] -= D2GG;
+            printf("Enemy hit you on %d hp.\n", D2GG);
+
+        } else
+            printf("You block enemys hit\n");
+    *skill_points +=1;
+}
+
+
+int escape(int GG[3],int NPC[3])
+{
+    int chance,D2GG;
+    chance=rand() % 10;
+    if(chance == 5 || chance == 3 || chance == 1)
+        return 1;
+    else
+    {
+        if(GG[0] > 60 &&(GG[1] > NPC[1] || GG[2] > NPC[2]))
+            return 1;
+    }
+    D2GG = NPC[1] + NPC[1] * (rand() % 101 - 50) / 100 - GG[2] + 5;
+    if (D2GG > 0)
+    {
+        GG[0] -= D2GG;
+        printf("\nEnemy hit you on %d hp.\n", D2GG);
+
+    } else
+        printf("You block enemys hit\n");
+    return 0;
+}
+
+
+void max_beat(int GG[3],int NPC[3],int *skill_points)
+{
+    if(*skill_points<10)
+    {
+        printf("\nYou have not enough points for this\n");
+        return;
+    }
+    else
+    {
+        NPC[0] = 0;
+        *skill_points -= 10;
+    }
+}
+
+
+void vampire(int GG[3],int NPC[3],int *skill_points)
+{
+    int D2NPC,D2GG,heal;
+    if(*skill_points<4)
+    {
+        printf("\nYou have not enough points for this\n");
+        return;
+    }
+    else
+    {
+        D2NPC=GG[1]*1.5+GG[1]*(rand()%101-50)/100-NPC[2];
+        D2GG = NPC[1] + NPC[1] * (rand() % 101 - 50) / 100 - GG[2]+3;
+        if (D2NPC > 0)
+        {
+            NPC[0] -= D2NPC;
+            printf("\nYou hitted enemy on %d hp.\n", D2NPC);
+        }
+        if (D2GG > 0)
+        {
+            GG[0] -= D2GG;
+            printf("Enemy hit you on %d hp.\n", D2GG);
+
+        } else
+            printf("You block enemys hit\n");
+    }
+    heal = D2NPC/2;
+    printf("You heal yourself for %d hp.\n",heal);
+    GG[0] += heal;
+    *skill_points -=4;
+}
+
+
+void Triple_hit(int GG[3],int NPC[3],int *skill_points)
+{
+    int D2NPC,D2GG;
+    if(*skill_points<6)
+    {
+        printf("\nYou have not enough points for this\n");
+        return;
+    }
+    else
+    {
+        D2NPC=GG[1]*3+GG[1]*(rand()%101-50)/100-NPC[2];
+        D2GG = NPC[1] + NPC[1] * (rand() % 101 - 50) / 100 - GG[2];
+        if (D2NPC > 0)
+        {
+            NPC[0] -= D2NPC;
+            printf("\nYou hitted enemy on %d hp.\n", D2NPC);
+        }
+        if (D2GG > 0)
+        {
+            GG[0] -= D2GG;
+            printf("Enemy hit you on %d hp.\n", D2GG);
+
+        } else
+            printf("You block enemys hit\n");
+    }
+    *skill_points -=6;
 }
 
 
@@ -205,7 +326,7 @@ void Hard_blow(int GG[3],int NPC[3])
     if(D2NPC>0)
     {
         NPC[0]-=D2NPC;
-        printf("You hitted enemy on %d hp.\n",D2NPC);
+        printf("\nYou hitted enemy on %d hp.\n",D2NPC);
     }
     else
         printf("Enemy block your hit\n");
@@ -233,7 +354,7 @@ void Careful_blow(int GG[3],int NPC[3])
     if(D2NPC>0)
     {
         NPC[0]-=D2NPC;
-        printf("You hitted enemy on %d hp.\n",D2NPC);
+        printf("\nYou hitted enemy on %d hp.\n",D2NPC);
     }
     else
         printf("Enemy block your hit\n");
@@ -252,6 +373,7 @@ int skills(int a,int GG[3],int NPC[3],char name_npc[32],int *skill_points)
 {
     char temp;
     int menucount = 4;
+    a = 0;
     while (1) {
         system("clear");
         print_fight_window(a, GG, NPC, name_npc,skill_points);
@@ -277,21 +399,21 @@ int skills(int a,int GG[3],int NPC[3],char name_npc[32],int *skill_points)
     }
 }
 
-void Potions(char *profileName,int GG[3])
+void Potions(MYSQL *mysql,char *profileName,int GG[3])
 {
-    int size = get_intValue(profileName,"inventory");
+    int size = get_intValue(mysql,profileName,"inventory");
 
     int power[size], cost[size];
 
     int *inventory = (int*)malloc(sizeof(int)*size);
-    get_inventory(profileName,inventory);
+    get_inventory(mysql,profileName,inventory);
     char **item_name = (char**)malloc(size*sizeof(char*));
     for(int i=0; i<size; i++)
         item_name[i]=(char*)malloc(32*sizeof(char));
 
     get_item_info(inventory,item_name,power,cost,size);
 
-    int hp = get_intValue(profileName,"hp");
+    int hp = get_intValue(mysql,profileName,"hp");
 
     int pos=0;
     while(1)
@@ -305,7 +427,7 @@ void Potions(char *profileName,int GG[3])
 
         for(int i=0; i<size; i++)
         {
-            printf("%2d%20s\t\t%3d\t",i+1,item_name[i],power[i]);
+            printf("%20s\t\t%3d\t",item_name[i],power[i]);
             if(i==pos)
                 printf("<<<");
             printf("\n");
@@ -343,7 +465,7 @@ void Potions(char *profileName,int GG[3])
                 }
                 break;
             case ESC:
-                set_inventory(profileName,inventory);
+                set_inventory(mysql,profileName,inventory);
                 for(int i=0; i<size; i++)
                     free(item_name[i]);
 
@@ -357,9 +479,9 @@ void Potions(char *profileName,int GG[3])
 }
 
 
-int fight(int GG[3],char *profile_name,int profile_level,int *skill_points)//Call this
+int fight(MYSQL *mysql,int GG[3],char *profile_name,int profile_level,int *skill_points)//Call this
 {
-    int what_hit=0,what_skill=0;
+    int what_hit=0,what_skill=0,what_escape=0;
     char name_npc[32];
     int NPC[3];
     random_enemy(profile_level,NPC,name_npc);
@@ -387,16 +509,16 @@ int fight(int GG[3],char *profile_name,int profile_level,int *skill_points)//Cal
                 switch(what_skill)
                 {
                     case 0:
-                        Hit(GG,NPC);
+                        Triple_hit(GG,NPC,skill_points);
                         break;
                     case 1:
-                        Hit(GG,NPC);
+                        vampire(GG,NPC,skill_points);
                         break;
                     case 2:
-                        Hit(GG,NPC);
+                        blood_magick(GG,NPC,skill_points);
                         break;
                     case 3:
-                        Hit(GG,NPC);
+                        max_beat(GG,NPC,skill_points);
                         break;
                     case 4:
                         if(*skill_points>=2)
@@ -409,26 +531,31 @@ int fight(int GG[3],char *profile_name,int profile_level,int *skill_points)//Cal
                 }
                 break;//For the not a long time
             case 4:
-                Potions(profile_name,GG);
+                Potions(mysql,profile_name,GG);
                 printf("\nYou closed you bag");
                 break;
             case 5:
-                printf("\nYou escaped");
-                getch();
-                return 1;
+                what_escape = escape(GG,NPC);
+                if(what_escape)
+                    return 1;
+                printf("\nUnseccessful escape");
+                break;
         }
-        if(NPC[0]<=0)
-        {
-            printf("\t\t You are killed %s\n",name_npc);
-            getch();
-            return 0;
-        }
+
         if(GG[0]<=0)
         {
             printf("\t\t You are dead!\n");
             getch();
             return 2;
         }
+
+        if(NPC[0]<=0)
+        {
+            printf("\t\t You killed a %s\n",name_npc);
+            getch();
+            return 0;
+        }
+
         getch();
     }
 }

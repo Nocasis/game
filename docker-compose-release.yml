@@ -1,0 +1,31 @@
+version: '2'
+services:
+  db:
+    image: mysql
+    environment:
+     - MYSQL_RANDOM_ROOT_PASSWORD=yes
+     - MYSQL_USER=Nocasis
+     - MYSQL_PASSWORD=HeHe1234
+     - MYSQL_DATABASE=profiles
+    volumes:
+     - ./tables.sql:/docker-entrypoint-initdb.d/tables.sql
+  game1:
+    build: .
+    ports:
+     - "8081:22"
+  game2:
+    build: .
+    ports:
+     - "8082:22"
+  game3:
+    build: .
+    ports:
+     - "8083:22"
+  game4:
+    build: .
+    ports:
+     - "8084:22"
+  game5:
+    build: .
+    ports:
+     - "8085:22"
