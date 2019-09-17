@@ -1,5 +1,7 @@
+Игра была дописана, как ppc таск для SchoolCTF.
+
 # Description
-### Author: user59050782
+### Author: nocasis, danrold
 ### Category: PPC
 
 RPG
